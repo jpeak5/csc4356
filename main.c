@@ -12,16 +12,22 @@
  * 
  */
 int main(int argc, char** argv) {
+     
+    int i;
+    //parse command line
+    for(i = 0; i < argc; i++){
+    	printf("got arg [%d]: %s\n",i, argv[i]);
+    }
 
     int verts,triangles;
-    FILE * f = fopen("mesh/icosa.mesh","r");
+    FILE * f = fopen(argv[1],"r");
 
     fscanf(f,"%d %d\n",&verts, &triangles);
     
     printf("looking for %d verts abd then %d triangles\n\n", verts, triangles);
     printf("-------------------begin verts------------\n"); 
     
-    int i = 1;
+    i = 1;
     for(i; i <= verts; i++){
         float px,py,pz,nx,ny,nz;
         char c;
