@@ -1,5 +1,5 @@
 CC= gcc
-EXEC= scratch
+EXEC= p1
 OBJS= main.o
 ifeq ($(shell uname), Linux)
     LIBS= -lglut -lGLEW -lGL
