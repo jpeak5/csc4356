@@ -1,3 +1,10 @@
+##2012-09-23
+Using the hello teapot example combined with lecture slides example code and with GL docs.
+##2012-09-22
+Have been grappling with C pointers and their use in arrays. 
+Also coming to understand that the Util3D modules are exactly that: 
+modules to be incorporated in a given project.
+
 ##2012-09-18
 This is the first entry for this file. See below for a from-memory account of work done up to this point.  
 
