@@ -9,12 +9,14 @@
 #include <stdlib.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
-/*
- * 
- */
+
+
+
+
 int main(int argc, char** argv) {
      
     int i;
+
     //parse command line
     for(i = 0; i < argc; i++){
     	printf("got arg [%d]: %s\n",i, argv[i]);
@@ -39,31 +41,22 @@ int main(int argc, char** argv) {
     struct vert v[verts];
     struct triangle t[triangles];
 
-//    printf("looking for %d verts abd then %d triangles\n\n", verts, triangles);
-//    printf("-------------------begin verts------------\n"); 
     
-    i = 1;
-    for(i; i <= verts; i++){
+    for(i=1; i <= verts; i++){
         float px,py,pz,nx,ny,nz;
         char c;
         fscanf(f, "%c     %f     %f     %f     %f     %f     %f\n", &c, &px, &py, &pz, &nx, &ny, &nz);
         v[i].v[0] = px;
-	v[i].v[1] = py;
-	v[i].v[2] = pz;
+    	v[i].v[1] = py;
+	    v[i].v[2] = pz;
 
-	v[i].n[0] = nx;
-	v[i].n[1] = ny;
-	v[i].n[2] = nz;
+    	v[i].n[0] = nx;
+    	v[i].n[1] = ny;
+	    v[i].n[2] = nz;
 	 
-//       fprintf(stdout, "%02d) %c (%f, %f, %f), normal (%f, %f, %f)\n", 
-//		i, c,
-//		v[i].v[0] ,v[i].v[1], v[i].v[2],
-//		v[i].n[0], v[i].n[1], v[i].n[2]
-//		);
     }
 
-    i = 1;
-    for(i; i<=triangles;i++){
+    for(i=1; i<=triangles;i++){
         int t1,t2,t3;
         char c;
         fscanf(f, "%c %i %i %i\n", &c, &t1, &t2, &t3);
@@ -72,7 +65,6 @@ int main(int argc, char** argv) {
 	t[i].b = t2;
 	t[i].c = t3;
 
-//        fprintf(stdout, "%02d)  %c (%d, %d, %d)\n", i, c,t[i].a, t[i].b, t[i].c);
     }
     
     fclose(f);
