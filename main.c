@@ -7,7 +7,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <GL/glew.h>
+#include <GL/glut.h>
 /*
  * 
  */
@@ -19,23 +20,15 @@ int main(int argc, char** argv) {
     	printf("got arg [%d]: %s\n",i, argv[i]);
     }
 
-
-    struct vertex{
-	float x;
-	float y;
-	float z;
-    };
-
-    struct normal {
-	float x;
-	float y;
-	float z;
+    struct vert{
+	    GLfloat v[3];
+	    GLfloat n[3];
     };
 
     struct triangle {
-	int a;
-	int b;
-	int c;
+	    int a;
+	    int b;
+	    int c;
     };
 
     int verts,triangles;
@@ -43,31 +36,30 @@ int main(int argc, char** argv) {
 
     fscanf(f,"%d %d\n",&verts, &triangles);
    
-    struct vertex v[verts];
-    struct normal n[verts];
+    struct vert v[verts];
     struct triangle t[triangles];
 
-    printf("looking for %d verts abd then %d triangles\n\n", verts, triangles);
-    printf("-------------------begin verts------------\n"); 
+//    printf("looking for %d verts abd then %d triangles\n\n", verts, triangles);
+//    printf("-------------------begin verts------------\n"); 
     
     i = 1;
     for(i; i <= verts; i++){
         float px,py,pz,nx,ny,nz;
         char c;
         fscanf(f, "%c     %f     %f     %f     %f     %f     %f\n", &c, &px, &py, &pz, &nx, &ny, &nz);
-        v[i].x = px;
-	v[i].y = py;
-	v[i].z = pz;
+        v[i].v[0] = px;
+	v[i].v[1] = py;
+	v[i].v[2] = pz;
 
-	n[i].x = nx;
-	n[i].y = ny;
-	n[i].z = nz;
+	v[i].n[0] = nx;
+	v[i].n[1] = ny;
+	v[i].n[2] = nz;
 	 
-        fprintf(stdout, "%02d) %c (%f, %f, %f), normal (%f, %f, %f)\n", 
-		i, c,
-		v[i].x ,v[i].y, v[i].z,
-		n[i].x, n[i].y, n[i].z
-		);
+//       fprintf(stdout, "%02d) %c (%f, %f, %f), normal (%f, %f, %f)\n", 
+//		i, c,
+//		v[i].v[0] ,v[i].v[1], v[i].v[2],
+//		v[i].n[0], v[i].n[1], v[i].n[2]
+//		);
     }
 
     i = 1;
@@ -80,11 +72,17 @@ int main(int argc, char** argv) {
 	t[i].b = t2;
 	t[i].c = t3;
 
-        fprintf(stdout, "%02d)  %c (%d, %d, %d)\n", i, c,t[i].a, t[i].b, t[i].c);
+//        fprintf(stdout, "%02d)  %c (%d, %d, %d)\n", i, c,t[i].a, t[i].b, t[i].c);
     }
     
     fclose(f);
+
+    GLfloat glui = 123345.345345;
+    fprintf(stdout, "\n\nsize of GLuint is %zu\n", sizeof glui);
     fprintf(stdout, "\n\ngot %d verts and %d triangles\n", verts, triangles);
+    fprintf(stdout, "\n\nexpect size of verts array is %zu\n", verts*glui*6);
+    fprintf(stdout, "\n\nsize of verts array is %zu\n", sizeof (v));
+
     return (EXIT_SUCCESS);
 }
 
