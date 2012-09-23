@@ -1,8 +1,16 @@
-p1 : main.o
-	gcc -o p1 main.o
-
-main.o : main.c
-	gcc -c main.c
-
+CC= gcc
+EXEC= scratch
+OBJS= main.o
+ifeq ($(shell uname), Linux)
+    LIBS= -lglut -lGLEW -lGL
+else ifeq ($(shell uname), Darwin)
+    LIBS= -lGLEW -framework GLUT -framework OpenGL
+else
+    LIBS= -lfreeglut -lglew32 -lopengl32 -lwinmm -lgdi32
+endif
+$(EXEC) : $(OBJS)
+	$(CC) -o $(EXEC) $(OBJS) $(LIBS)
+%.o : %.c
+	$(CC) -c $<
 clean :
-	rm main.o p1
+	rm $(EXEC) $(OBJS)
