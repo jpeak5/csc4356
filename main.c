@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
     fprintf(stdout, "\n\nexpect size of verts array is %zu\n", verts*glui*6);
     fprintf(stdout, "\n\nsize of verts array is %zu\n", sizeof (v));
 
-    glutInitDisplay(GLUT_DEPTH | GLUT_DOUBLE);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
 
     return (EXIT_SUCCESS);
 }
