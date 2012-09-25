@@ -79,41 +79,46 @@ struct obj *readFileData(char *arg1){
     struct triangle t[tri_count];
     printf("scanning %d verts and %d triangles\n", vert_count, tri_count);
     
-
+    //declaratino + initializtion
+    //this call to malloc() means that this thing
+    //we are declaring will persist beyond the scope of the 
+    //function call...
     struct obj *object = malloc(sizeof(struct obj));
+    
     object->verts = malloc(vert_count * sizeof(struct vert));
+
     for(i=0; i < vert_count; i++){
+        
         GLfloat px,py,pz,nx,ny,nz;
+        
         char c;
         fscanf(f, "%c     %f     %f     %f     %f     %f     %f\n", &c, &px, &py, &pz, &nx, &ny, &nz);
+
         object->verts[i].v[0] = px;
     	object->verts[i].v[1] = py;
 	    object->verts[i].v[2] = pz;
 
     	object->verts[i].n[0] = nx;
     	object->verts[i].n[1] = ny;
-
-        // assert(object->verts[i].n[2] != NULL);
 	    object->verts[i].n[2] = nz;
     }
-/*
-    //object->verts = v;
-    for(i=0; i<=vert_count; i++){
-        printf("vert %02d: (%f, %f, %f)", i, object->verts[i].v[0], object->verts[i].v[1], object->verts[i].v[2]);
+    
+    for(i=0; i<vert_count; i++){
+        printf("vert %02d: (%f, %f, %f)\n", i, object->verts[i].v[0], object->verts[i].v[1], object->verts[i].v[2]);
     }
-*/
-    for(i=1; i<=tri_count;i++){
+
+    object->triangles = malloc(tri_count * sizeof(struct triangle));
+    for(i=0; i<=tri_count;i++){
         int t1,t2,t3;
         char c;
         fscanf(f, "%c %i %i %i\n", &c, &t1, &t2, &t3);
 	
-    	t[i].a = t1;
-	    t[i].b = t2;
-    	t[i].c = t3;
+    	object->triangles[i].a = t1;
+	    object->triangles[i].b = t2;
+    	object->triangles[i].c = t3;
 
     }
     
-    object->triangles = t;
     fclose(f);
     return object;
 }
