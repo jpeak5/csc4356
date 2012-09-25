@@ -1,5 +1,8 @@
+##2012-09-25
+consult with Prof Kooima in office hours to clear up some issues with the C language...
 ##2012-09-23
 Using the hello teapot example combined with lecture slides example code and with GL docs.
+
 ##2012-09-22
 Have been grappling with C pointers and their use in arrays. 
 Also coming to understand that the Util3D modules are exactly that: 
