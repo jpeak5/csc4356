@@ -13,7 +13,6 @@
 
 
 
-/*
 static void reshape(int w, int h)
 {
     GLdouble x = 0.5 * (GLdouble) w / (GLdouble) h;
@@ -38,11 +37,9 @@ static void display(void)
     glLoadIdentity();
     glTranslated(0.0, 0.0, -5.0);
 
-    glutWireDodecahedron();
+//    glutWireDodecahedron();
     glutSwapBuffers();
 }
-*/
-
 struct vert{
     GLfloat v[3];
     GLfloat n[3];
@@ -56,6 +53,7 @@ struct triangle {
 
 struct obj{
     
+    GLuint vbo[1];
     int num_vert;
     int num_tri;
     struct vert *verts;
@@ -81,14 +79,7 @@ void fireTheExplosiveBolts(void)
     *
     *
     */
-    
 
-    glEnable(GL_NORMALIZE);                                                    \
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
-    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 }
     
 
@@ -111,9 +102,9 @@ struct obj *readFileData(char *arg1){
     //this call to malloc() means that this thing
     //we are declaring will persist beyond the scope of the 
     //function call...
-    struct obj *object = malloc(sizeof(struct obj));
+    O = malloc(sizeof(struct obj));
     
-    object->verts = malloc(vert_count * sizeof(struct vert));
+    O->verts = malloc(vert_count * sizeof(struct vert));
 
     for(i=0; i < vert_count; i++){
         
@@ -122,105 +113,68 @@ struct obj *readFileData(char *arg1){
         char c;
         fscanf(f, "%c     %f     %f     %f     %f     %f     %f\n", &c, &px, &py, &pz, &nx, &ny, &nz);
 
-        object->verts[i].v[0] = px;
-    	object->verts[i].v[1] = py;
-	    object->verts[i].v[2] = pz;
+        O->verts[i].v[0] = px;
+    	O->verts[i].v[1] = py;
+	    O->verts[i].v[2] = pz;
 
-    	object->verts[i].n[0] = nx;
-    	object->verts[i].n[1] = ny;
-	    object->verts[i].n[2] = nz;
+    	O->verts[i].n[0] = nx;
+    	O->verts[i].n[1] = ny;
+	    O->verts[i].n[2] = nz;
     }
     
     for(i=0; i<vert_count; i++){
-        printf("vert %02d: (%f, %f, %f)\n", i, object->verts[i].v[0], object->verts[i].v[1], object->verts[i].v[2]);
+        printf("vert %02d: (%f, %f, %f)\n", i, O->verts[i].v[0], O->verts[i].v[1], O->verts[i].v[2]);
     }
 
-    object->triangles = malloc(tri_count * sizeof(struct triangle));
+    O->triangles = malloc(tri_count * sizeof(struct triangle));
     for(i=0; i<=tri_count;i++){
         int t1,t2,t3;
         char c;
         fscanf(f, "%c %i %i %i\n", &c, &t1, &t2, &t3);
 	
-    	object->triangles[i].a = t1;
-	    object->triangles[i].b = t2;
-    	object->triangles[i].c = t3;
+    	O->triangles[i].a = t1;
+	    O->triangles[i].b = t2;
+    	O->triangles[i].c = t3;
 
     }
     
     fclose(f);
-    return object;
+
+    glEnable(GL_NORMALIZE);                                                    \
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+    return O;
 }
 
 
 int main(int argc, char** argv) {
-    char *filename = argv[1]; 
-    struct obj *object = readFileData(filename);
-    
-    fireTheExplosiveBolts();
-    
-/*
-    GLfloat glui = 123345.345345;
-    fprintf(stdout, "\n\nsize of GLuint is %zu\n", sizeof glui);
-    fprintf(stdout, "\n\ngot %d vert_count and %d triangles\n", vert_count, tri_count);
-    fprintf(stdout, "\n\nexpect size of verts array is %zu\n", vert_count*glui*6);
-    //fprintf(stdout, "\n\nsize of verts array is %zu\n", sizeof (v));
-
-    GLuint vbo[1];
-    glGenBuffers(1, &vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof (v), v, GL_STATIC_DRAW);
-    printf("The size of v is sizeof (v) = %d", sizeof(v));
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowSize(640,480);
+    glutInitWindowSize(640, 480);
     glutInit(&argc, argv);
 
     glutCreateWindow(argv[0]);
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
+    //glutMotionFunc(motion);
+    //glutMouseFunc(mouse);
 
-    if(glewInit() == GLEW_OK)
-        glutMainLoop();
+    char *filename = argv[1]; 
+    O = readFileData(filename);
 
-    glEnable(GL_COLOR_MATERIAL);
-    {
-*/
-        /* Enable the necessary array pointers. */
-/*
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        {
-*/
-            /* Bind the array pointers to the array buffer object. */
-/*
-            glBindBuffer(GL_ARRAY_BUFFER, P->vbo[0]);
-            {
-                glVertexPointer(3, GL_FLOAT, sz * 6, (GLvoid *) (     0));
-                glNormalPointer(   GL_FLOAT, sz * 6, (GLvoid *) (sz * 3));
-*/
-                /* Render the squares. */
-/*
-                glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, P->ebo[0]);
-                glDrawElements(GL_TRIANGLES, nf, GL_UNSIGNED_SHORT, 0);
-*/
-                /* Render the lines */
-/*
-                glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, P->ebo[1]);
-                glDrawElements(GL_TRIANGLES, nl, GL_UNSIGNED_SHORT, 0);
-*/
-                /* Revert all state. */
-/*
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-            }
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-        }
-        glDisableClientState(GL_NORMAL_ARRAY);
-        glDisableClientState(GL_VERTEX_ARRAY);
-    }
-    glDisable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);                                                    \
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 
-*/
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+    fireTheExplosiveBolts();
+    glutMainLoop();
+
     return (EXIT_SUCCESS);
 }
 
