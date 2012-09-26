@@ -11,6 +11,8 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 
+
+
 /*
 static void reshape(int w, int h)
 {
@@ -61,7 +63,33 @@ struct obj{
 
 };
 
+struct obj *O;
 
+void fireTheExplosiveBolts(void)
+{
+    /*
+     * borrowed from one of 
+     * the 'viewing' demos
+     *
+    rotation_x = 0.0;
+    rotation_y = 0.0;
+    position_z = 5.0;
+    scale      = 1.0;                                                          \
+    
+    C = cube_create();
+    
+    *
+    *
+    */
+    
+
+    glEnable(GL_NORMALIZE);                                                    \
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+}
     
 
 struct obj *readFileData(char *arg1){
@@ -127,7 +155,8 @@ struct obj *readFileData(char *arg1){
 int main(int argc, char** argv) {
     char *filename = argv[1]; 
     struct obj *object = readFileData(filename);
-
+    
+    fireTheExplosiveBolts();
     
 /*
     GLfloat glui = 123345.345345;
