@@ -44,9 +44,13 @@ struct shape{
 
 static void init_vbo(struct shape *S)
 {
+    size_t vbo_sz = sizeof(struct vert) * S->num_vert;
     glBindBuffer(GL_ARRAY_BUFFER,         S->vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER,         sizeof(S->verts), S->verts, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,         vbo_sz, S->verts, GL_STATIC_DRAW);
 
+
+
+    printf("size of vbo = %zu", vbo_sz);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, S->ebo[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(S->triangles), S->triangles, GL_STATIC_DRAW);
 }
@@ -58,9 +62,10 @@ static void init_vbo(struct shape *S)
 /* Allocate and initialize a new shape object. There must be a current OpenGL  */
 /* context at the time.                                                       */
 
-shape *shape_create(arg1)
+shape *shape_create(char * arg1)
 {
     shape *S;
+    S = malloc(sizeof(shape));
 
     //printf("param 1 to readFileData = %s\n", arg1);
     int i,vert_count,tri_count;
@@ -70,17 +75,15 @@ shape *shape_create(arg1)
     printf("reading file %s\n", arg1);
     fscanf(f,"%d %d\n",&vert_count, &tri_count);
 //    struct vert v[vert_count];
-    struct triangle t[tri_count];
     printf("scanning %d verts and %d triangles\n", vert_count, tri_count);
-    
+    S->num_vert = (int)vert_count;
     //declaratino + initializtion
     //this call to malloc() means that this thing
     //we are declaring will persist beyond the scope of the 
     //function call...
-    S = malloc(sizeof(shape));
     
     S->verts = malloc(vert_count * sizeof(struct vert));
-
+    printf("sizeof S->verts= %zu", vert_count * sizeof(struct vert));
     for(i=0; i < vert_count; i++){
         
         GLfloat px,py,pz,nx,ny,nz;
@@ -154,7 +157,6 @@ void shape_render(shape *S)
         glBindBuffer(GL_ARRAY_BUFFER,         S->vbo[0]);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, S->ebo[0]);
         {
-            size_t i;
 
             glVertexPointer(  3, GL_FLOAT, sz * 8, (GLvoid *) (     0));
             glNormalPointer(     GL_FLOAT, sz * 8, (GLvoid *) (sz * 3));

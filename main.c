@@ -57,7 +57,7 @@ static void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 //    glTranslated(0.0, 0.0, -5.0);
-
+    printf("got here");
 //    glutWireDodecahedron();
 //    see cube_render
     glutSwapBuffers();

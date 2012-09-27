@@ -1,4 +1,4 @@
-CC= gcc
+CC= gcc -Wall
 EXEC= p1
 OBJS= main.o shape.o
 ifeq ($(shell uname), Linux)
