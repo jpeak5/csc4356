@@ -21,6 +21,7 @@ shape *S;
 
 void startup(char *filename)
 {
+    printf("begin startup(%s)\n", filename);
     rotation_x = 0.0;                                                          \
     rotation_y = 0.0;                                                          \
     position_z = 5.0;                                                          \
@@ -56,10 +57,10 @@ static void display(void)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-//    glTranslated(0.0, 0.0, -5.0);
-    printf("got here");
+    glTranslated(0.0, 0.0, -5.0);
+    printf("display()\n");
 //    glutWireDodecahedron();
-//    see cube_render
+    shape_render(S);
     glutSwapBuffers();
 }
     
@@ -72,6 +73,7 @@ void motion(int x, int y)                                                      \
     rotation_y = 180.0 * (2.0 * nx - 1.0);                                     \
                                                                                \
     glutPostRedisplay();                                                       \
+    printf("just finished motion(%d, %d)\n", x, y);
 }                                                                              \
 
 /*----------------------------------------------------------------------------*/

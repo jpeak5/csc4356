@@ -45,14 +45,18 @@ struct shape{
 static void init_vbo(struct shape *S)
 {
     size_t vbo_sz = sizeof(struct vert) * S->num_vert;
+    printf("size of vbo @vbo init time= %zu\n", vbo_sz);
+
     glBindBuffer(GL_ARRAY_BUFFER,         S->vbo[0]);
     glBufferData(GL_ARRAY_BUFFER,         vbo_sz, S->verts, GL_STATIC_DRAW);
 
 
 
-    printf("size of vbo = %zu", vbo_sz);
+    size_t ebo_sz = sizeof(struct triangle) * S->num_tri;
+    printf("size of ebo @ebo init time= %zu\n", ebo_sz);
+    
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, S->ebo[0]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(S->triangles), S->triangles, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_sz, S->triangles, GL_STATIC_DRAW);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -83,7 +87,8 @@ shape *shape_create(char * arg1)
     //function call...
     
     S->verts = malloc(vert_count * sizeof(struct vert));
-    printf("sizeof S->verts= %zu", vert_count * sizeof(struct vert));
+    printf("sizeof S->verts at allocation time = %zu\n", vert_count * sizeof(struct vert));
+    
     for(i=0; i < vert_count; i++){
         
         GLfloat px,py,pz,nx,ny,nz;
@@ -100,11 +105,14 @@ shape *shape_create(char * arg1)
 	    S->verts[i].n[2] = nz;
     }
     
-    for(i=0; i<vert_count; i++){
-        printf("vert %02d: (%f, %f, %f)\n", i, S->verts[i].v[0], S->verts[i].v[1], S->verts[i].v[2]);
-    }
+    //for(i=0; i<vert_count; i++){
+    //    printf("vert %02d: (%f, %f, %f)\n", i, S->verts[i].v[0], S->verts[i].v[1], S->verts[i].v[2]);
+    //}
 
     S->triangles = malloc(tri_count * sizeof(struct triangle));
+    S->num_tri = tri_count;
+    printf("size of S->triangles at allocation time = %zu\n", sizeof(struct triangle)*S->num_tri);
+
     for(i=0; i<=tri_count;i++){
         int t1,t2,t3;
         char c;
@@ -143,6 +151,7 @@ void shape_delete(shape *S)
 
 void shape_render(shape *S)
 {
+    printf("begin shape_render(*S)\n");
     const size_t sz = sizeof (GLfloat);
 
     assert(S);
@@ -158,8 +167,9 @@ void shape_render(shape *S)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, S->ebo[0]);
         {
 
-            glVertexPointer(  3, GL_FLOAT, sz * 8, (GLvoid *) (     0));
-            glNormalPointer(     GL_FLOAT, sz * 8, (GLvoid *) (sz * 3));
+            glVertexPointer(  3, GL_FLOAT, sz * 6, (GLvoid *) (     0));
+            glNormalPointer(     GL_FLOAT, sz * 6, (GLvoid *) (sz * 3));
+            glDrawElements(GL_TRIANGLES, 3* S->num_tri, GL_UNSIGNED_SHORT, 0);
 
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
