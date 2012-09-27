@@ -38,6 +38,7 @@ static void display(void)
     glTranslated(0.0, 0.0, -5.0);
 
 //    glutWireDodecahedron();
+//    see cube_render
     glutSwapBuffers();
 }
 struct vert{
