@@ -1,6 +1,6 @@
 CC= gcc
 EXEC= p1
-OBJS= main.o
+OBJS= main.o shape.o
 ifeq ($(shell uname), Linux)
     LIBS= -lglut -lGLEW -lGL
 else ifeq ($(shell uname), Darwin)
