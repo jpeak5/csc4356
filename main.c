@@ -46,7 +46,7 @@ void startup(char *filename)
 
     zoom        = 0.5;                                                         \
     rotation_x  = 0.0;
-    rotation_y  = 0.0;
+    rotation_y  = 0.9;
 
     position_x  = 0.0;
     position_y  = 2.0;
@@ -64,7 +64,7 @@ void startup(char *filename)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+    glClearColor(0.5f, 0.5f, 0.9f, 0.0f);
 
 }
 

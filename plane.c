@@ -201,13 +201,13 @@ void plane_render(plane *P)
 
                 /* Render the squares. */
 
-                glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
+                glColor4f(0.2f, 0.2f, 0.2f, 1.0f);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, P->ebo[0]);
                 glDrawElements(GL_TRIANGLES, nf, GL_UNSIGNED_SHORT, 0);
 
                 /* Render the lines */
 
-                glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
+                glColor4f(0.1f, 0.1f, 0.1f, 1.0f);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, P->ebo[1]);
                 glDrawElements(GL_TRIANGLES, nl, GL_UNSIGNED_SHORT, 0);
 

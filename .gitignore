@@ -6,3 +6,4 @@ tags
 *.tar.gz
 *.zip
 git-log
+output/
