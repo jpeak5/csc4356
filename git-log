@@ -1,0 +1,35 @@
+d953155, 6 minutes ago, message: this commit folds in code from the Util library, and the project bears a passing resemblance to the class demonstration today;wq
+b8e88bb, 7 minutes ago, message: no need to track the compressed archives
+83840d5, 13 minutes ago, message: entry to describe the last commit
+a7893ea, 2 hours ago, message: more copy paste to match the viewing-tumble-5 example
+b33e74a, 2 hours ago, message: ignoring .pngs that are not part of the project
+2d0cfeb, 3 hours ago, message: DETAILS!! and element buffer should be composed of GLushorts, NOT ints!
+be0bbe1, 7 hours ago, message: woohoo! something is drawn, but pretty funky
+23a5fde, 7 hours ago, message: got rid of many errors, unused vars, unitialized usages, implicitly delared functions...
+c081a3b, 8 hours ago, message: refactor to 'viewing' examples is complete, program runs without error BUT without loading anything beyond a blank window
+4969a4a, 18 hours ago, message: trivial; added placeholder
+8252eeb, 29 hours ago, message: we have a window!!!!
+b608e6b, 2 days ago, message: moving closer...adding an obj* to the heap
+15db7a6, 2 days ago, message: continuing the work started in office hours...
+4d73cdc, 2 days ago, message: having met with Dr. Kooima, some of those pesky SegFault problems, or more specifically, the concepts behind them have become more clear
+40916e0, 2 days ago, message: no need to track the tags file
+fc9372f, 5 days ago, message: updating notes
+6121d04, 5 days ago, message: ripping the teapot hello code into this project
+7ea8e14, 5 days ago, message: typo
+4842184, 5 days ago, message: updating make elements to match current proj
+13eb109, 5 days ago, message: make was failing because I hadn't included the GL libs yet;
+48541a7, 5 days ago, message: adding the first line of glut init....
+e670323, 5 days ago, message: tidying up old comments, printfs and unnecessary junk
+3948f45, 5 days ago, message: tucking in this hanging changeset; some refactoring towards parity with the lecture examples
+f934ffe, 9 days ago, message: ignoring html output
+c44934c, 9 days ago, message: first docs commit...these are not hard to write as we go, but almost impossible to re-create the night before they are due...
+c60d8e8, 2 weeks ago, message: storing ecerything in arrays of structs
+7c04c83, 2 weeks ago, message: set input file from command line
+aa6ecad, 2 weeks ago, message: accounting for newlines really helps keep fscanf on track
+44651dd, 2 weeks ago, message: this is broken- fscanf reads line by line? resets after each call? or what?
+4ad711a, 2 weeks ago, message: ignoring the executable
+0a724e8, 2 weeks ago, message: makefile first success
+942e364, 2 weeks ago, message: no need to trach the .o files
+71236ad, 2 weeks ago, message: changed the counter i init val to make checking easier (1-60), not 0-59
+2bc036a, 2 weeks ago, message: cleaning up this garbage...if I need the IDE later, I'll grab it.
+93da73b, 2 weeks ago, message: initial AND: working code for reading a file...
