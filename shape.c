@@ -24,9 +24,7 @@ struct vert{
 };
 
 struct triangle {
-    int a;
-    int b;
-    int c;
+    GLushort t[3];
 };
 
 struct shape{
@@ -113,14 +111,16 @@ shape *shape_create(char * arg1)
     S->num_tri = tri_count;
     printf("size of S->triangles at allocation time = %zu\n", sizeof(struct triangle)*S->num_tri);
 
-    for(i=0; i<=tri_count;i++){
+    for(i=0; i<tri_count;i++){
         int t1,t2,t3;
         char c;
         fscanf(f, "%c %i %i %i\n", &c, &t1, &t2, &t3);
 	
-    	S->triangles[i].a = t1;
-	    S->triangles[i].b = t2;
-    	S->triangles[i].c = t3;
+    	S->triangles[i].t[0] = t1;
+	    S->triangles[i].t[1] = t2;
+    	S->triangles[i].t[2] = t3;
+        
+        printf("got triangle with points %d %d %d\n", S->triangles[i].t[0], S->triangles[i].t[1], S->triangles[i].t[2]);
 
     }
     
