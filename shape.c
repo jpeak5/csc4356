@@ -44,7 +44,7 @@ struct shape{
 static void init_vbo(struct shape *S)
 {
     size_t vbo_sz = sizeof(struct vert) * S->num_vert;
-    printf("size of vbo @vbo init time= %zu\n", vbo_sz);
+    //printf("size of vbo @vbo init time= %zu\n", vbo_sz);
 
     glBindBuffer(GL_ARRAY_BUFFER,         S->vbo[0]);
     glBufferData(GL_ARRAY_BUFFER,         vbo_sz, S->verts, GL_STATIC_DRAW);
@@ -52,7 +52,7 @@ static void init_vbo(struct shape *S)
 
 
     size_t ebo_sz = sizeof(struct triangle) * S->num_tri;
-    printf("size of ebo @ebo init time= %zu\n", ebo_sz);
+    //printf("size of ebo @ebo init time= %zu\n", ebo_sz);
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, S->ebo[0]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebo_sz, S->triangles, GL_STATIC_DRAW);
@@ -75,10 +75,10 @@ shape *shape_create(char * arg1)
     
     FILE * f = fopen((char *)arg1,"r");
 
-    printf("reading file %s\n", arg1);
+    //printf("reading file %s\n", arg1);
     fscanf(f,"%d %d\n",&vert_count, &tri_count);
 //    struct vert v[vert_count];
-    printf("scanning %d verts and %d triangles\n", vert_count, tri_count);
+    //printf("scanning %d verts and %d triangles\n", vert_count, tri_count);
     S->num_vert = (int)vert_count;
     //declaratino + initializtion
     //this call to malloc() means that this thing
@@ -86,7 +86,7 @@ shape *shape_create(char * arg1)
     //function call...
     
     S->verts = malloc(vert_count * sizeof(struct vert));
-    printf("sizeof S->verts at allocation time = %zu\n", vert_count * sizeof(struct vert));
+    //printf("sizeof S->verts at allocation time = %zu\n", vert_count * sizeof(struct vert));
     
     for(i=0; i < vert_count; i++){
         
@@ -110,7 +110,7 @@ shape *shape_create(char * arg1)
 
     S->triangles = malloc(tri_count * sizeof(struct triangle));
     S->num_tri = tri_count;
-    printf("size of S->triangles at allocation time = %zu\n", sizeof(struct triangle)*S->num_tri);
+    //printf("size of S->triangles at allocation time = %zu\n", sizeof(struct triangle)*S->num_tri);
 
     for(i=0; i<tri_count;i++){
         int t1,t2,t3;
@@ -121,7 +121,7 @@ shape *shape_create(char * arg1)
 	    S->triangles[i].t[1] = t2;
     	S->triangles[i].t[2] = t3;
         
-        printf("got triangle with points %d %d %d\n", S->triangles[i].t[0], S->triangles[i].t[1], S->triangles[i].t[2]);
+        //printf("got triangle with points %d %d %d\n", S->triangles[i].t[0], S->triangles[i].t[1], S->triangles[i].t[2]);
 
     }
     
@@ -152,7 +152,7 @@ void shape_delete(shape *S)
 
 void shape_render(shape *S)
 {
-    printf("begin shape_render(*S)\n");
+    //printf("begin shape_render(*S)\n");
     const size_t sz = sizeof (GLfloat);
 
     assert(S);
