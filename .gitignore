@@ -3,3 +3,5 @@ p1
 *.html
 tags
 *.png
+*.tar.gz
+*.zip
