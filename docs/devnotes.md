@@ -1,3 +1,16 @@
+##2012-09-27
+Nothing like the pressure of the last minute to squeeze the bugs out...  
+
+1. using the -Wall flag on the compiler was a huge boon to my debugging effort.
+2. with the compile warnings eliminated, and a clean refactoring done, reviewing the lecture slides revealed this gem:
+`glDrawElements(GL_TRIANGLES, 3* S->num_tri, GL_UNSIGNED_SHORT, 0)`
+3. now I was drawing real geonmetry to the window, but everything was skewed.
+    1. icosa looked like a deflated beachball & 747 looked like the banner of this site
+    2. I was sure that I had messed up the offset in the glBufferData() calls, but unfortunately, I had another hour or so of frustration ahead
+    3. after refactoring my `struct triangle` a bit, I took a peek back at the lecture slides for the answer: __element buffer needs to be composed of GLushorts, _NOT_ ints!!__
+4. using the example set in `viewing-tumble-5.c` verbatim without issue, going further is entirely within reach...
+##2012-09-26
+no progress, just alot of head scratching and copying and pasting things around
 ##2012-09-25
 consult with Prof Kooima in office hours to clear up some issues with the C language...
 ##2012-09-23
