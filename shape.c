@@ -24,6 +24,7 @@ struct vert{
 };
 
 struct triangle {
+    //int t[3];
     GLushort t[3];
 };
 
