@@ -1,8 +1,8 @@
 CC= gcc -Wall
 EXEC= p1
-OBJS= main.o shape.o
+OBJS= main.o shape.o plane.o image.o
 ifeq ($(shell uname), Linux)
-    LIBS= -lglut -lGLEW -lGL
+    LIBS= -lglut -lGLEW -lGL -ltiff -ljpeg -lpng
 else ifeq ($(shell uname), Darwin)
     LIBS= -lGLEW -framework GLUT -framework OpenGL
 else

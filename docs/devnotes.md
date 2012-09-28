@@ -9,6 +9,7 @@ Nothing like the pressure of the last minute to squeeze the bugs out...
     2. I was sure that I had messed up the offset in the glBufferData() calls, but unfortunately, I had another hour or so of frustration ahead
     3. after refactoring my `struct triangle` a bit, I took a peek back at the lecture slides for the answer: __element buffer needs to be composed of GLushorts, _NOT_ ints!!__
 4. using the example set in `viewing-tumble-5.c` verbatim without issue, going further is entirely within reach...
+5. with a running incarnation of `viewing-look-6.c`, I have copied and pasted as much as I can. Small tweaks from here on out will be fun and informative.
 ##2012-09-26
 no progress, just alot of head scratching and copying and pasting things around
 ##2012-09-25
