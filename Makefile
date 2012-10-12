@@ -1,5 +1,5 @@
 CC= gcc -Wall
-EXEC= p1
+EXEC= p2
 OBJS= main.o shape.o plane.o image.o
 ifeq ($(shell uname), Linux)
     LIBS= -lglut -lGLEW -lGL -ltiff -ljpeg -lpng
