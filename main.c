@@ -199,6 +199,38 @@ void idle(void)
 
     glutPostRedisplay();
 }
+void loadVertShader(){
+    GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
+    GLchar *vert_text = load(vert_filename);
+    glShaderSource (vert_shader, 1, (const GLchar **) &vert_text, 0);
+    glCompileShader(vert_shader);
+    free(vert_text);
+}
+
+void loadFragShader(){
+    GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    GLchar *frag_text = load(frag_filename);
+    glShaderSource (frag_shader, 1, (const GLchar **) &frag_text, 0);
+    glCompileShader(frag_shader);
+    free(frag_text);
+}
+
+char *load(const char *name)
+{
+    FILE *fp = 0;
+    void *p = 0;
+    size_t n = 0;
+    if ((fp = fopen(name, "rb")))
+    {
+        if (fseek(fp, 0, SEEK_END) == 0)
+            if ((n = (size_t) ftell(fp)))
+                if (fseek(fp, 0, SEEK_SET) == 0)
+                    if ((p = calloc(n + 1, 1)))
+                        fread(p, 1, n, fp);
+        fclose(fp);
+    }
+    return p;
+}
 
 int main(int argc, char** argv) {
 
