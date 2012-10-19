@@ -69,6 +69,23 @@ void startup(char *filename)
 }
 
 /*----------------------------------------------------------------------------*/
+char *load(const char *name)
+{
+    FILE *fp = 0;
+    void *p = 0;
+    size_t n = 0;
+    if ((fp = fopen(name, "rb")))
+    {
+        if (fseek(fp, 0, SEEK_END) == 0)
+            if ((n = (size_t) ftell(fp)))
+                if (fseek(fp, 0, SEEK_SET) == 0)
+                    if ((p = calloc(n + 1, 1)))
+                        fread(p, 1, n, fp);
+        fclose(fp);
+    }
+    return p;
+}
+/*----------------------------------------------------------------------------*/
 
 void keyboardup(unsigned char key, int x, int y)
 {
@@ -199,7 +216,8 @@ void idle(void)
 
     glutPostRedisplay();
 }
-void loadVertShader(){
+
+void loadVertShader(char * vert_filename){
     GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
     GLchar *vert_text = load(vert_filename);
     glShaderSource (vert_shader, 1, (const GLchar **) &vert_text, 0);
@@ -207,7 +225,7 @@ void loadVertShader(){
     free(vert_text);
 }
 
-void loadFragShader(){
+void loadFragShader(char * frag_filename){
     GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
     GLchar *frag_text = load(frag_filename);
     glShaderSource (frag_shader, 1, (const GLchar **) &frag_text, 0);
@@ -215,22 +233,6 @@ void loadFragShader(){
     free(frag_text);
 }
 
-char *load(const char *name)
-{
-    FILE *fp = 0;
-    void *p = 0;
-    size_t n = 0;
-    if ((fp = fopen(name, "rb")))
-    {
-        if (fseek(fp, 0, SEEK_END) == 0)
-            if ((n = (size_t) ftell(fp)))
-                if (fseek(fp, 0, SEEK_SET) == 0)
-                    if ((p = calloc(n + 1, 1)))
-                        fread(p, 1, n, fp);
-        fclose(fp);
-    }
-    return p;
-}
 
 int main(int argc, char** argv) {
 
@@ -251,6 +253,12 @@ int main(int argc, char** argv) {
     glutIgnoreKeyRepeat(1);
 
     char *filename = argv[1]; 
+
+    if (argc < 2) 
+    {
+        printf("you must provide an input file\n");
+        return (EXIT_FAILURE);
+    }
 
     if (glewInit() == GLEW_OK)
     {
