@@ -68,6 +68,7 @@ void startup(char *filename)
 
 }
 
+
 /*----------------------------------------------------------------------------*/
 char *load(const char *name)
 {
@@ -217,7 +218,7 @@ void idle(void)
     glutPostRedisplay();
 }
 
-void loadVertShader(char * vert_filename){
+void loadVertShader(const char *vert_filename){
     GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
     GLchar *vert_text = load(vert_filename);
     glShaderSource (vert_shader, 1, (const GLchar **) &vert_text, 0);
@@ -225,7 +226,7 @@ void loadVertShader(char * vert_filename){
     free(vert_text);
 }
 
-void loadFragShader(char * frag_filename){
+void loadFragShader(const char *frag_filename){
     GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
     GLchar *frag_text = load(frag_filename);
     glShaderSource (frag_shader, 1, (const GLchar **) &frag_text, 0);
@@ -233,6 +234,16 @@ void loadFragShader(char * frag_filename){
     free(frag_text);
 }
 
+/*----------------------------------------------------------------------------*/
+void init_shaders(char **shader)
+{
+   loadVertShader(shader[2]);
+   loadFragShader(shader[3]);
+}
+
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 
 int main(int argc, char** argv) {
 
@@ -256,13 +267,14 @@ int main(int argc, char** argv) {
 
     if (argc < 2) 
     {
-        printf("you must provide an input file\n");
+        printf("you must provide an input file. \nfail. \nexit.\n");
         return (EXIT_FAILURE);
     }
 
     if (glewInit() == GLEW_OK)
     {
         startup(filename);
+        init_shaders(argv);
         glutMainLoop();
     }
 
