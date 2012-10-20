@@ -6,6 +6,8 @@
  */
 
 #include <stdio.h>
+#include <sys/time.h>
+#include <time.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <GL/glew.h>
@@ -39,6 +41,10 @@ GLdouble click_ny;
 
 shape *S;
 plane *P;
+
+//store compiled shaders 
+//with broad scope
+GLuint program;
 
 void startup(char *filename)
 {
@@ -138,6 +144,11 @@ static void display(void)
     glRotated(rotation_x, 1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y, -position_z);
+
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    GLuint uniform_time = glGetUniformLocation(program, "time");
+    glUniform1f(uniform_time, tv.tv_usec);
 
     glPushMatrix();
     {
@@ -254,7 +265,7 @@ void checkCompile(GLuint shader)
 
 }
 /*----------------------------------------------------------------------------*/
-void check_shader_linkage(GLuint program)
+void check_shader_linkage()
 {
     GLchar *p;
     GLint s, n;
@@ -270,13 +281,12 @@ void check_shader_linkage(GLuint program)
     }
 }
 /*----------------------------------------------------------------------------*/
-GLuint link_shaders(GLuint frag_shader, GLuint vert_shader)
+void link_shaders(GLuint frag_shader, GLuint vert_shader)
 {
-    GLuint program = glCreateProgram();
+    program = glCreateProgram();
     glAttachShader(program, vert_shader);
     glAttachShader(program, frag_shader);
     glLinkProgram(program);
-    return program;
 }
 /*----------------------------------------------------------------------------*/
 void init_shaders(char **shader)
@@ -286,8 +296,8 @@ void init_shaders(char **shader)
     GLuint fs = loadFragShader(shader[3]);
     checkCompile(fs);
     checkCompile(vs);
-    GLuint program = link_shaders(fs,vs);
-    check_shader_linkage(program);
+    link_shaders(fs,vs);
+    check_shader_linkage();
     glUseProgram(program);
 
 }
