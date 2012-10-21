@@ -14,8 +14,8 @@
 #include <GL/glut.h>
 #include "shape.h"
 #include <math.h>
-#include "key.h"
-#include "plane.h"
+#include "Util3d/key.h"
+#include "Util3d/plane.h"
 
 int      last_time;
 
