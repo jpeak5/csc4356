@@ -63,12 +63,18 @@ shape *shape_create(char * filename)
     //printf("param 1 to readFileData = %s\n", filename);
     int i,vert_count,tri_count;
     
-    FILE * f = fopen((char *)filename,"r");
-
+    FILE *f;
+    if(!(f = fopen((char *)filename,"r")))
+    {
+        //sprintf("Could not open file %s for reading.\n", filename);
+        printf("Could not open file for reading.\n");
+        exit(EXIT_FAILURE);
+    }
+    assert(f);
     //printf("reading file %s\n", filename);
     fscanf(f,"%d %d\n",&vert_count, &tri_count);
-//    struct vert v[vert_count];
-    //printf("scanning %d verts and %d triangles\n", vert_count, tri_count);
+    assert(vert_count > 0);
+
     S->num_vert = (int)vert_count;
     //declaratino + initializtion
     //this call to malloc() means that this thing
