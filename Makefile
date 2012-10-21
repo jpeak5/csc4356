@@ -2,7 +2,7 @@ VPATH = Util3d/
 
 CC= gcc -Wall
 EXEC= p2
-OBJS= main.o shape.o plane.o image.o
+OBJS= main.o shape.o plane.o image.o shader.o
 
 ifeq ($(shell uname), Linux)
     LIBS= -lglut -lGLEW -lGL -ltiff -ljpeg -lpng
