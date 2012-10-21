@@ -12,9 +12,9 @@
 #include <assert.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
-#include "shape.h"
 #include <math.h>
 #include "Util3d/key.h"
+#include "Util3d/obj.h"
 #include "Util3d/plane.h"
 #include "shader.h"
 
@@ -40,8 +40,8 @@ GLdouble click_ny;
 
 
 
-shape *S;
 plane *P;
+obj *O;
 
 //store compiled shaders 
 //with broad scope
@@ -63,8 +63,7 @@ void startup(char *filename)
     keyboard_dy = 0.0;
     keyboard_dz = 0.0;
     
-
-    S = shape_create(filename);
+    O = obj_create(filename);
     P = plane_create(20);
 
     glEnable(GL_DEPTH_TEST);
@@ -137,12 +136,11 @@ static void display(void)
     glPushMatrix();
     {
         glDisable(GL_LIGHTING);
-        plane_render(P);
-
+        //plane_render(P);
+        obj_render(O);
         glTranslated(0.0, 1.0, 0.0);
 
         glEnable(GL_LIGHTING);
-        shape_render(S);
     }
     glPopMatrix();
     
