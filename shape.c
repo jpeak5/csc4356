@@ -8,28 +8,19 @@
 
 /*----------------------------------------------------------------------------*/
 
-
-/*----------------------------------------------------------------------------*/
-
-/* The following data give the vertices of the standard unit cube.  These     */
-/* may be stored in a vertex array or buffer object and used directly with    */
-/* a call to glDrawArrays(GL_QUADS, 0, 24). The vertex ordering and texture   */
-/* coordinates provided give face orientations in line with the definition    */
-/* of GL_TEXTURE_CUBE_MAP.                                                    */
-
-
-struct vert{
+struct vert
+{
     GLfloat v[3];
     GLfloat n[3];
 };
 
-struct triangle {
-    //int t[3];
+struct triangle 
+{
     GLushort t[3];
 };
 
-struct shape{
-    
+struct shape
+{
     GLuint vbo[1];
     //this might be a problem;
     GLuint ebo[1];
@@ -37,7 +28,6 @@ struct shape{
     int num_tri;
     struct vert *verts;
     struct triangle *triangles;
-
 };
 
 
@@ -65,17 +55,17 @@ static void init_vbo(struct shape *S)
 /* Allocate and initialize a new shape object. There must be a current OpenGL  */
 /* context at the time.                                                       */
 
-shape *shape_create(char * arg1)
+shape *shape_create(char * filename)
 {
     shape *S;
     S = malloc(sizeof(shape));
 
-    //printf("param 1 to readFileData = %s\n", arg1);
+    //printf("param 1 to readFileData = %s\n", filename);
     int i,vert_count,tri_count;
     
-    FILE * f = fopen((char *)arg1,"r");
+    FILE * f = fopen((char *)filename,"r");
 
-    //printf("reading file %s\n", arg1);
+    //printf("reading file %s\n", filename);
     fscanf(f,"%d %d\n",&vert_count, &tri_count);
 //    struct vert v[vert_count];
     //printf("scanning %d verts and %d triangles\n", vert_count, tri_count);
