@@ -2,10 +2,10 @@ VPATH = Util3d/
 
 CC= gcc -Wall
 EXEC= p2
-OBJS= main.o shape.o plane.o image.o shader.o
+OBJS= main.o shape.o plane.o image.o shader.o obj.o
 
 ifeq ($(shell uname), Linux)
-    LIBS= -lglut -lGLEW -lGL -ltiff -ljpeg -lpng
+    LIBS= -lglut -lGLEW -lGL -ltiff -ljpeg -lpng -lm
 else ifeq ($(shell uname), Darwin)
     LIBS= -lGLEW -framework GLUT -framework OpenGL
 else
