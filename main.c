@@ -13,10 +13,10 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <math.h>
-#include "Util3d/key.h"
-#include "Util3d/obj.h"
-#include "Util3d/plane.h"
-#include "shader.h"
+#include "util3d/key.h"
+#include "util3d/obj.h"
+#include "util3d/plane.h"
+#include "lib/shader.h"
 
 int      last_time;
 

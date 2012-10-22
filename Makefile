@@ -1,4 +1,4 @@
-VPATH = Util3d/
+VPATH = util3d:lib
 
 CC= gcc -Wall
 EXEC= p2
