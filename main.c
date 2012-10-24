@@ -70,7 +70,7 @@ void startup(char *filename)
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
-    glClearColor(0.5f, 0.5f, 0.9f, 0.0f);
+    glClearColor(0.19f, 0.17f, 0.16f, 0.0f);
 
 }
 
@@ -124,7 +124,7 @@ static void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glRotated(rotation_x, 1.0, 0.0, 0.0);
+    glRotated(rotation_x, -1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y, -position_z);
 
@@ -140,10 +140,10 @@ static void display(void)
     GLuint brick_size = glGetUniformLocation(program, "brick_size");
     GLuint brick_frac = glGetUniformLocation(program, "brick_frac");
 
-    glUniform3f(mortar_color, 0.5, 0.5, 0.5);
-    glUniform3f(brick_color, 0.7, 0.2, 0.9);
-    glUniform2f(brick_size, 1.0, 0.5);
-    glUniform2f(brick_frac, 0.5, 1.0);
+    glUniform3f(mortar_color, 0.05, 0.05, 0.05);
+    glUniform3f(brick_color, 0.1, 0.1, 0.1);
+    glUniform2f(brick_size, 0.6, 0.2);
+    glUniform2f(brick_frac, 0.9, 0.9);
 
     glPushMatrix();
     {
