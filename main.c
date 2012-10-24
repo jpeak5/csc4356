@@ -142,8 +142,8 @@ static void display(void)
 
     glUniform3f(mortar_color, 0.5, 0.5, 0.5);
     glUniform3f(brick_color, 0.7, 0.2, 0.9);
-    glUniform2f(brick_size, 1.0, 1.0);
-    glUniform2f(brick_frac, 0.5, 0.3);
+    glUniform2f(brick_size, 1.0, 0.5);
+    glUniform2f(brick_frac, 0.5, 1.0);
 
     glPushMatrix();
     {
