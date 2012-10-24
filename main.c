@@ -130,8 +130,9 @@ static void display(void)
 
     struct timeval tv;
     gettimeofday(&tv, NULL);
+
     GLuint uniform_time = glGetUniformLocation(program, "time");
-    glUniform1f(uniform_time, tv.tv_usec);
+    glUniform1f(uniform_time, tv.tv_usec/100000);
 
     glPushMatrix();
     {
