@@ -8,3 +8,5 @@ tags
 git-log
 output/
 *.swp
+/obj/#*
+/obj/*~
