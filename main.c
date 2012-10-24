@@ -134,6 +134,17 @@ static void display(void)
     GLuint uniform_time = glGetUniformLocation(program, "time");
     glUniform1f(uniform_time, tv.tv_usec/100000);
 
+    //brick colors
+    GLuint mortar_color = glGetUniformLocation(program, "mortar_color");
+    GLuint brick_color = glGetUniformLocation(program, "brick_color");
+    GLuint brick_size = glGetUniformLocation(program, "brick_size");
+    GLuint brick_frac = glGetUniformLocation(program, "brick_frac");
+
+    glUniform3f(mortar_color, 0.5, 0.5, 0.5);
+    glUniform3f(brick_color, 0.7, 0.2, 0.9);
+    glUniform2f(brick_size, 2.0, 1.0);
+    glUniform2f(brick_frac, 2.0, 1.0);
+
     glPushMatrix();
     {
         glDisable(GL_LIGHTING);
