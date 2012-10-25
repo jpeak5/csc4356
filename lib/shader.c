@@ -10,8 +10,12 @@ GLuint program;
 void init_shaders(char **shader)
 {
     assert(shader[2]);
-    GLuint vs = loadVertShader(shader[2]);
-    GLuint fs = loadFragShader(shader[3]);
+    GLuint vs= loadVertShader(shader[2]); 
+    GLuint fs;
+    if(shader[3])
+    {
+        fs = loadFragShader(shader[3]);
+    }
     checkCompile(fs);
     checkCompile(vs);
     link_shaders(fs,vs);
