@@ -14,4 +14,5 @@
 #define KEY_U ' '
 #define KEY_F 'w'
 #define KEY_B 's'
+#define KEY_X 'l'
 #endif

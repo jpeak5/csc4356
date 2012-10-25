@@ -87,6 +87,7 @@ void keyboardup(unsigned char key, int x, int y)
         case KEY_U: keyboard_dy -= 1.0; break;
         case KEY_F: keyboard_dz += 1.0; break;
         case KEY_B: keyboard_dz -= 1.0; break;
+        case KEY_X: init_shaders;       break;
     }
 }
 
@@ -136,10 +137,12 @@ static void display(void)
 
     //brick colors
     GLuint mortar_color = glGetUniformLocation(program, "mortar_color");
+    GLuint test_color = glGetUniformLocation(program, "test_color");
     GLuint brick_color = glGetUniformLocation(program, "brick_color");
     GLuint brick_size = glGetUniformLocation(program, "brick_size");
     GLuint brick_frac = glGetUniformLocation(program, "brick_frac");
 
+    glUniform3f(test_color, 1.0, 1.0, 1.0);
     glUniform3f(mortar_color, 0.05, 0.05, 0.05);
     glUniform3f(brick_color, 0.1, 0.1, 0.1);
     glUniform2f(brick_size, 0.6, 0.2);

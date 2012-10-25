@@ -2,6 +2,7 @@ uniform vec3 mortar_color;
 uniform vec3 brick_color;
 uniform vec2 brick_size;
 uniform vec2 brick_frac;
+uniform vec3 test_color;
 
 varying vec3 var_L;
 varying vec3 var_N;
