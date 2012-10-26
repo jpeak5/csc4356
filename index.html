@@ -1,4 +1,25 @@
 <h1>CSC4356::Project2</h1>
 <a href="https://github.com/jpeak5/csc4356/tarball/1.9">source code</a>
-<p><img alt="screenshot" src="images/procedural-final-01.png" width="40%"/>Using shaders and custom 3D objects... </p>
+<p>
+<img alt="screenshot" src="images/procedural-final-01.png" width="40%"/>
+Using shaders and custom 3D objects... </p>
+<h2>Organization</h2>
+<p>As these projects become more complex, I recognized that imposing structure early would be much easier than later.
+Additionally, I wanted to segregate code written by others into discrete and distinct units.</p>  
+<p>Moving files is certainly simple, but adapting the Makefile required plenty of Googling.
+After struggling with the Make variables and failing, I discovered <code>VPATH</code> in the Makefile documentation.
+Adding this colon-delimited virtual path to my Makefile, <code>VPATH = util3d:lib</code>, 
+with an entry for every library/directory has really helped keep things a bit more tidy.</p>
+<h2>Wings</h2>
+<p>I have modeled my house in Sketchup with a fair degree of accuracy and detail. There is a learning curve to Sketchp, 
+but Wings also has a rustic feel. Using Wings3D is like learning to use vim (which I am) after having only used fancy 
+word processors like MS Word.</p>
+<img alt="screenshot" src="images/wings-01.png" width="40%"/>
+<p> My initial frustration with Wings led me to try the Blender. While Blender has a slicker
+interface (like Word) and probably more features, the learning curve was so steep that after 2 evenings wasted, I threw in the towel.</p>
+<ul>
+    <li>Having found a few settings and gotten comfortable with it, I really enjoy using Wings for this sort of modeling.</li>
+    <li>In hindsight, I probably would have saved DIY modeling for lagniappe and focused on other parts of the problem.</li>
+</ul>
+<img alt="screenshot" src="images/wings-02.png" width="40%"/>
 
