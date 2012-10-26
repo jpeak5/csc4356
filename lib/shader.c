@@ -9,8 +9,12 @@ GLuint program;
 /*----------------------------------------------------------------------------*/
 void init_shaders(char **shader)
 {
-    assert(shader[2]);
-    GLuint vs= loadVertShader(shader[2]); 
+    GLuint vs;
+    if(shader[2])
+    {
+        vs = loadVertShader(shader[2]);
+    }
+
     GLuint fs;
     if(shader[3])
     {
@@ -21,7 +25,6 @@ void init_shaders(char **shader)
     link_shaders(fs,vs);
     check_shader_linkage();
     glUseProgram(program);
-
 }
 /*----------------------------------------------------------------------------*/
 void link_shaders(GLuint frag_shader, GLuint vert_shader)
