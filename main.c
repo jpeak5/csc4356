@@ -87,7 +87,9 @@ void keyboardup(unsigned char key, int x, int y)
         case KEY_U: keyboard_dy -= 1.0; break;
         case KEY_F: keyboard_dz += 1.0; break;
         case KEY_B: keyboard_dz -= 1.0; break;
-        case KEY_X: init_shaders;       break;
+        case KEY_X: 
+                    glUseProgram(0);
+                    break;
     }
 }
 
