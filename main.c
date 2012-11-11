@@ -17,6 +17,7 @@
 #include "util3d/obj.h"
 #include "util3d/plane.h"
 #include "lib/shader.h"
+#include "menu.h"
 
 int      last_time;
 
@@ -38,7 +39,7 @@ GLdouble click_rotation_y;
 GLdouble click_nx;
 GLdouble click_ny;
 
-
+int menu;
 
 plane *P;
 obj *O;
@@ -138,11 +139,11 @@ static void display(void)
     glUniform1f(uniform_time, tv.tv_usec/100000);
 
     //brick colors
-    GLuint mortar_color = glGetUniformLocation(program, "mortar_color");
-    GLuint test_color = glGetUniformLocation(program, "test_color");
-    GLuint brick_color = glGetUniformLocation(program, "brick_color");
-    GLuint brick_size = glGetUniformLocation(program, "brick_size");
-    GLuint brick_frac = glGetUniformLocation(program, "brick_frac");
+    GLuint mortar_color =   glGetUniformLocation(program, "mortar_color");
+    GLuint test_color   =   glGetUniformLocation(program, "test_color");
+    GLuint brick_color  =   glGetUniformLocation(program, "brick_color");
+    GLuint brick_size   =   glGetUniformLocation(program, "brick_size");
+    GLuint brick_frac   =   glGetUniformLocation(program, "brick_frac");
 
     glUniform3f(test_color, 1.0, 1.0, 1.0);
     glUniform3f(mortar_color, 0.05, 0.05, 0.05);
@@ -240,7 +241,7 @@ int main(int argc, char** argv) {
     glutInitWindowSize(640, 480);
     glutInit(&argc, argv);
 
-    glutCreateWindow(argv[0]);
+    glutCreateWindow(argv[1]);
 
     glutKeyboardUpFunc(keyboardup);
     glutKeyboardFunc(keyboard);
@@ -264,6 +265,7 @@ int main(int argc, char** argv) {
     {
         startup(filename);
         init_shaders(argv);
+        init_menu();
         glutMainLoop();
     }
 
