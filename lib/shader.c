@@ -7,24 +7,55 @@
 
 GLuint program;
 /*----------------------------------------------------------------------------*/
+void init_shader_vars()
+{
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+
+    GLuint uniform_time = glGetUniformLocation(program, "time");
+    glUniform1f(uniform_time, tv.tv_usec/100000);
+
+    //brick colors
+    GLuint mortar_color =   glGetUniformLocation(program, "mortar_color");
+    GLuint test_color   =   glGetUniformLocation(program, "test_color");
+    GLuint brick_color  =   glGetUniformLocation(program, "brick_color");
+    GLuint brick_size   =   glGetUniformLocation(program, "brick_size");
+    GLuint brick_frac   =   glGetUniformLocation(program, "brick_frac");
+
+    glUniform3f(test_color, 1.0, 1.0, 1.0);
+    glUniform3f(mortar_color, 0.05, 0.05, 0.05);
+    glUniform3f(brick_color, 0.1, 0.1, 0.1);
+    glUniform2f(brick_size, 0.6, 0.2);
+    glUniform2f(brick_frac, 0.9, 0.9);
+
+}
+
+/*----------------------------------------------------------------------------*/
 void init_shaders(char **shader)
 {
     GLuint vs;
-    if(shader[2])
+    if(shader[0])
     {
-        vs = loadVertShader(shader[2]);
+        vs = loadVertShader(shader[0]);
     }
 
     GLuint fs;
-    if(shader[3])
+    if(shader[1])
     {
-        fs = loadFragShader(shader[3]);
+        fs = loadFragShader(shader[1]);
     }
+
+    init_shader_vars();
     checkCompile(fs);
     checkCompile(vs);
     link_shaders(fs,vs);
     check_shader_linkage();
     glUseProgram(program);
+}
+/*----------------------------------------------------------------------------*/
+void reload_shaders(char **shaders)
+{
+    init_shaders(shaders);
 }
 /*----------------------------------------------------------------------------*/
 void link_shaders(GLuint frag_shader, GLuint vert_shader)

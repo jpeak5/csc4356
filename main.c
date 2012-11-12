@@ -132,24 +132,6 @@ static void display(void)
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y, -position_z);
 
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-
-    GLuint uniform_time = glGetUniformLocation(program, "time");
-    glUniform1f(uniform_time, tv.tv_usec/100000);
-
-    //brick colors
-    GLuint mortar_color =   glGetUniformLocation(program, "mortar_color");
-    GLuint test_color   =   glGetUniformLocation(program, "test_color");
-    GLuint brick_color  =   glGetUniformLocation(program, "brick_color");
-    GLuint brick_size   =   glGetUniformLocation(program, "brick_size");
-    GLuint brick_frac   =   glGetUniformLocation(program, "brick_frac");
-
-    glUniform3f(test_color, 1.0, 1.0, 1.0);
-    glUniform3f(mortar_color, 0.05, 0.05, 0.05);
-    glUniform3f(brick_color, 0.1, 0.1, 0.1);
-    glUniform2f(brick_size, 0.6, 0.2);
-    glUniform2f(brick_frac, 0.9, 0.9);
 
     glPushMatrix();
     {
@@ -254,17 +236,28 @@ int main(int argc, char** argv) {
     glutIgnoreKeyRepeat(1);
 
     char *filename = argv[1]; 
-
+    char *shader[2];
     if (argc < 2) 
     {
         printf("you must provide an input file. \nfail. \nexit.\n");
         return (EXIT_FAILURE);
     }
+    else if(argc == 3) 
+    {
+        shader[0] = argv[2];
+    }
+    else if(argc ==4)
+    {
+        shader[0] = argv[2];
+        shader[1] = argv[3];
+        printf("Initial shaders Loading as %s and %s\n", shader[0], shader[1]);
+    }
+
 
     if (glewInit() == GLEW_OK)
     {
         startup(filename);
-        init_shaders(argv);
+        init_shaders(shader);
         init_menu();
         glutMainLoop();
     }

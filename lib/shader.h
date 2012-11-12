@@ -1,4 +1,5 @@
 void init_shaders(char **shader);
+void reload_shaders(char **shaders);
 void link_shaders(GLuint frag_shader, GLuint vert_shader);
 void check_shader_linkage();
 void checkCompile(GLuint shader);
