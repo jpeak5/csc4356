@@ -6,14 +6,15 @@
 #define FIXED_FUNC  1
 #define PHONG       2
 #define SIMPLE      3
+#define BRICK       4
 
 
 void menu_handler(int choice)
 {
-    char * shaders[2];
 
     char * phong[2]     = {"shader/phong.vert", "shader/phong.frag"};
     char * simple[2]    = {"shader/simple_shdr.vert", "shader/simple_shdr.frag"}; 
+    char * brick[2]     = {"shader/brick.vert", "shader/brick.frag"}; 
 
     switch(choice)
     {
@@ -23,6 +24,10 @@ void menu_handler(int choice)
 
         case SIMPLE:
             reload_shaders(simple);
+        break;
+
+        case BRICK:
+            reload_shaders(brick);
         break;
 
         case PHONG:
@@ -37,6 +42,7 @@ void init_menu()
 
     glutAddMenuEntry("Revert to Fixed Function", FIXED_FUNC);
     glutAddMenuEntry("Use simple shader", SIMPLE);
+    glutAddMenuEntry("Use Brick", BRICK);
     glutAddMenuEntry("Use Phong", PHONG);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
