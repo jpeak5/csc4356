@@ -233,27 +233,37 @@ int main(int argc, char** argv) {
     glutIgnoreKeyRepeat(1);
 
     char *filename = argv[1]; 
-    char *shader[2];
-    if (argc < 2) 
-    {
-        printf("you must provide an input file. \nfail. \nexit.\n");
-        return (EXIT_FAILURE);
-    }
-    else if(argc == 3) 
-    {
-        shader[0] = argv[2];
-    }
-    else if(argc ==4)
-    {
-        shader[0] = argv[2];
-        shader[1] = argv[3];
-    }
+    char *shader[argc-2];
+    int count;
 
+    switch(argc)
+    {
+        case 1:
+            printf("you must provide an input file. \nfail. \nexit.\n");
+            return (EXIT_FAILURE);
+        break;
+
+        case 2:
+            printf("Gimme some shaders!\n");
+            return (EXIT_FAILURE);
+        break;
+
+        case 3:
+            shader[0]   = argv[2];
+            count       = 1;
+        break;
+    
+        case 4:
+            shader[0]   = argv[2];
+            shader[1]   = argv[3];
+            count       = 2;
+        break;
+    }
 
     if (glewInit() == GLEW_OK)
     {
         startup(filename);
-        init_shaders(shader);
+        init_shaders(shader,count);
         init_menu();
         glutMainLoop();
     }

@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -7,6 +8,10 @@
 #include "shader.h"
 
 GLuint program;
+GLuint vert_shader;
+GLuint frag_shader;
+
+
 GLuint uniform_time;
 
 //brick colors
@@ -41,39 +46,60 @@ void init_shader_vars()
 }
 
 /*----------------------------------------------------------------------------*/
-void init_shaders(char **shader)
+void init_shaders(char **shader, int count)
 {
     init_shader_vars();
 
-    GLuint vs;
-    if(shader[0])
+
+    printf("init_shaders has been passed %d shaders in its input param\n", count);
+
+    if(count ==1)
     {
-        vs = loadVertShader(shader[0]);
+        vert_shader = loadVertShader(shader[0]);
+        checkCompile(vert_shader);
     }
 
-    GLuint fs;
-    if(shader[1])
+    if(count ==2)
     {
-        fs = loadFragShader(shader[1]);
+        assert(shader[1] != NULL);
+        printf("loading second shader");
+        
+        vert_shader = loadVertShader(shader[0]);
+        checkCompile(vert_shader);
+
+        frag_shader = loadFragShader(shader[1]);
+        checkCompile(frag_shader);
     }
 
-    checkCompile(fs);
-    checkCompile(vs);
-    link_shaders(fs,vs);
+    link_shaders();
+
     check_shader_linkage();
+    
     glUseProgram(program);
 }
 /*----------------------------------------------------------------------------*/
-void reload_shaders(char **shaders)
+void reload_shaders(char **shaders, int count)
 {
-    init_shaders(shaders);
+    glUseProgram(0);
+    init_shaders(shaders, count);
 }
 /*----------------------------------------------------------------------------*/
-void link_shaders(GLuint frag_shader, GLuint vert_shader)
+void link_shaders()
 {
     program = glCreateProgram();
-    glAttachShader(program, vert_shader);
-    glAttachShader(program, frag_shader);
+
+    if(vert_shader > 0)
+    {
+        assert(vert_shader > 0);
+        glAttachShader(program, vert_shader);
+    }
+    
+    if(frag_shader > 0)
+    {
+        assert(frag_shader > 0);
+        glAttachShader(program, frag_shader);
+    }
+    
     glLinkProgram(program);
 }
 /*----------------------------------------------------------------------------*/
@@ -88,7 +114,7 @@ void check_shader_linkage()
     if ((s == 0) && (p = (GLchar *) calloc(n + 1, 1)))
     {
         glGetProgramInfoLog(program, n, NULL, p);
-        fprintf(stderr, "OpenGL Program Error:\n%s", p);
+        fprintf(stderr, "OpenGL Program LINK Error:\n%s", p);
         free(p);
     }
 }
@@ -104,7 +130,7 @@ void checkCompile(GLuint shader)
     if ((s == 0) && (p = (GLchar *) calloc(n + 1, 1)))
     {
         glGetShaderInfoLog(shader, n, NULL, p);
-        fprintf(stderr, "OpenGL Shader Error:\n%s", p);
+        fprintf(stderr, "OpenGL Shader Compilation Error:\n%s", p);
         free(p);
     }
 
@@ -112,21 +138,23 @@ void checkCompile(GLuint shader)
 /*----------------------------------------------------------------------------*/
 
 GLuint loadVertShader(const char *vert_filename){
-    GLuint vert_shader = glCreateShader(GL_VERTEX_SHADER);
+    assert(vert_filename);
+    GLuint vs = glCreateShader(GL_VERTEX_SHADER);
     GLchar *vert_text = load(vert_filename);
-    glShaderSource (vert_shader, 1, (const GLchar **) &vert_text, 0);
-    glCompileShader(vert_shader);
+    glShaderSource (vs, 1, (const GLchar **) &vert_text, 0);
+    glCompileShader(vs);
     free(vert_text);
-    return vert_shader;
+    return vs;
 }
 
 GLuint loadFragShader(const char *frag_filename){
-    GLuint frag_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    assert(frag_filename);
+    GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     GLchar *frag_text = load(frag_filename);
-    glShaderSource (frag_shader, 1, (const GLchar **) &frag_text, 0);
-    glCompileShader(frag_shader);
+    glShaderSource (fs, 1, (const GLchar **) &frag_text, 0);
+    glCompileShader(fs);
     free(frag_text);
-    return frag_shader;
+    return fs;
 }
 /*----------------------------------------------------------------------------*/
 char *load(const char *name)

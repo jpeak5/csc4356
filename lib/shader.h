@@ -1,7 +1,7 @@
-void init_shaders(char **shader);
+void init_shaders(char **shader, int count);
 void init_shader_vars();
-void reload_shaders(char **shaders);
-void link_shaders(GLuint frag_shader, GLuint vert_shader);
+void reload_shaders(char **shaders, int count);
+void link_shaders();
 void check_shader_linkage();
 void checkCompile(GLuint shader);
 GLuint loadVertShader(const char *vert_filename);
