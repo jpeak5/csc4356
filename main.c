@@ -7,7 +7,6 @@
 
 #include <stdio.h>
 #include <sys/time.h>
-#include <time.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <GL/glew.h>
@@ -44,9 +43,6 @@ int menu;
 plane *P;
 obj *O;
 
-//store compiled shaders 
-//with broad scope
-GLuint program;
 
 void startup(char *filename)
 {
@@ -132,6 +128,7 @@ static void display(void)
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y, -position_z);
 
+    init_shader_vars();
 
     glPushMatrix();
     {
@@ -250,7 +247,6 @@ int main(int argc, char** argv) {
     {
         shader[0] = argv[2];
         shader[1] = argv[3];
-        printf("Initial shaders Loading as %s and %s\n", shader[0], shader[1]);
     }
 
 

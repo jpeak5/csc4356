@@ -3,9 +3,19 @@
 #include <assert.h>
 #include <GL/glew.h>
 #include <GL/glut.h>
+#include <time.h>
 #include "shader.h"
 
 GLuint program;
+GLuint uniform_time;
+
+//brick colors
+GLuint mortar_color;
+GLuint test_color;
+GLuint brick_color;
+GLuint brick_size;
+GLuint brick_frac;
+
 /*----------------------------------------------------------------------------*/
 void init_shader_vars()
 {
@@ -23,7 +33,7 @@ void init_shader_vars()
     GLuint brick_frac   =   glGetUniformLocation(program, "brick_frac");
 
     glUniform3f(test_color, 1.0, 1.0, 1.0);
-    glUniform3f(mortar_color, 0.05, 0.05, 0.05);
+    glUniform3f(mortar_color, 0.05, 1.0, 0.05);
     glUniform3f(brick_color, 0.1, 0.1, 0.1);
     glUniform2f(brick_size, 0.6, 0.2);
     glUniform2f(brick_frac, 0.9, 0.9);
@@ -33,6 +43,8 @@ void init_shader_vars()
 /*----------------------------------------------------------------------------*/
 void init_shaders(char **shader)
 {
+    init_shader_vars();
+
     GLuint vs;
     if(shader[0])
     {
@@ -45,7 +57,6 @@ void init_shaders(char **shader)
         fs = loadFragShader(shader[1]);
     }
 
-    init_shader_vars();
     checkCompile(fs);
     checkCompile(vs);
     link_shaders(fs,vs);
