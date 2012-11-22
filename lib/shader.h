@@ -7,3 +7,5 @@ void checkCompile(GLuint shader);
 GLuint loadVertShader(const char *vert_filename);
 GLuint loadFragShader(const char *frag_filename);
 char *load(const char *name);
+GLuint program;
+

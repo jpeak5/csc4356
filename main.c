@@ -43,6 +43,34 @@ int menu;
 plane *P;
 obj *O;
 
+void init_textures()
+{
+
+    unsigned int mtl_spec = obj_get_mtrl_map(O, 0, OBJ_KS); 
+    unsigned int mtl_diff = obj_get_mtrl_map(O, 0, OBJ_KD); 
+
+    GLuint my_diffuse_texture  = mtl_diff;
+    GLuint my_specular_texture = mtl_spec;
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, my_diffuse_texture);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, my_specular_texture);
+    
+    glActiveTexture(GL_TEXTURE0);
+    
+    //glUniform1i(my_diffuse_sampler, 0);
+    //glUniform1i(my_specular_sampler, 1);
+
+    GLint spec = glGetUniformLocation(program, "specular");
+    glUniform1i(spec, 1);
+
+    GLint diff = glGetUniformLocation(program, "diffuse");
+    glUniform1i(diff, 0);
+
+    
+}
 
 void startup(char *filename)
 {
@@ -63,10 +91,13 @@ void startup(char *filename)
     O = obj_create(filename);
     P = plane_create(20);
 
+    init_textures();
+
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
+    
     glClearColor(0.19f, 0.17f, 0.16f, 0.0f);
 
 }

@@ -7,7 +7,6 @@
 #include <time.h>
 #include "shader.h"
 
-GLuint program;
 GLuint vert_shader;
 GLuint frag_shader;
 
