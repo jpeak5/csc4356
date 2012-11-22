@@ -29,6 +29,7 @@ void init_shader_vars()
 
     GLuint uniform_time = glGetUniformLocation(program, "time");
     glUniform1f(uniform_time, tv.tv_usec/100000);
+    glUniform1f(uniform_time, tv.tv_usec/100000);
 
     //brick colors
     GLuint mortar_color =   glGetUniformLocation(program, "mortar_color");
