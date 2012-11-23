@@ -8,6 +8,7 @@
 #define SIMPLE      3
 #define BRICK       4
 #define DIFFUSE     5
+#define MULTITEX    6
 
 
 void menu_handler(int choice)
@@ -17,6 +18,7 @@ void menu_handler(int choice)
     char * simple[2]    = {"shader/simple_shdr.vert", "shader/simple_shdr.frag"}; 
     char * brick[2]     = {"shader/brick.vert", "shader/brick.frag"}; 
     char * diffuse[1]   = {"shader/diffuse.vert"}; 
+    char * multitex[2]  = {"shader/multitex.vert", "shader/multitex.frag"}; 
 
     switch(choice)
     {
@@ -39,6 +41,10 @@ void menu_handler(int choice)
         case DIFFUSE:
             reload_shaders(diffuse,1);
         break;
+
+        case MULTITEX:
+            reload_shaders(multitex,2);
+        break;
     }
 }
 
@@ -51,6 +57,7 @@ void init_menu()
     glutAddMenuEntry("Use Brick", BRICK);
     glutAddMenuEntry("Use Phong", PHONG);
     glutAddMenuEntry("Use diffuse", DIFFUSE);
+    glutAddMenuEntry("Use multitex", MULTITEX);
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 }
