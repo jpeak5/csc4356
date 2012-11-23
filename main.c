@@ -48,28 +48,32 @@ void init_textures()
 
     unsigned int mtl_spec = obj_get_mtrl_map(O, 0, OBJ_KS); 
     unsigned int mtl_diff = obj_get_mtrl_map(O, 0, OBJ_KD); 
+    unsigned int mtl_norm = obj_get_mtrl_map(O, 0, OBJ_KA); 
 
-    GLuint my_diffuse_texture  = mtl_diff;
-    GLuint my_specular_texture = mtl_spec;
+    GLuint diff_tex = mtl_diff;
+    GLuint spec_tex = mtl_spec;
+    GLuint norm_tex = mtl_norm;
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, my_diffuse_texture);
+    glBindTexture(GL_TEXTURE_2D, diff_tex);
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, my_specular_texture);
+    glBindTexture(GL_TEXTURE_2D, spec_tex);
+    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, norm_tex);
     
     glActiveTexture(GL_TEXTURE0);
     
-    //glUniform1i(my_diffuse_sampler, 0);
-    //glUniform1i(my_specular_sampler, 1);
-
+    GLint norm = glGetUniformLocation(program, "normal");
+    glUniform1i(norm, 2);
+    
     GLint spec = glGetUniformLocation(program, "specular");
     glUniform1i(spec, 1);
 
     GLint diff = glGetUniformLocation(program, "diffuse");
     glUniform1i(diff, 0);
 
-    
 }
 
 void startup(char *filename)
@@ -92,6 +96,7 @@ void startup(char *filename)
     P = plane_create(20);
 
     init_textures();
+    glBindAttribLocationARB(program, 6, "tangent");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -157,7 +162,7 @@ static void display(void)
 
     glRotated(rotation_x, -1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
-    glTranslated(-position_x, -position_y, -position_z);
+    glTranslated(-position_x, -position_y+1.0, -position_z);
 
     init_shader_vars();
 
