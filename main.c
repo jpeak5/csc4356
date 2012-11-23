@@ -48,7 +48,7 @@ void init_textures()
 
     unsigned int mtl_spec = obj_get_mtrl_map(O, 0, OBJ_KS); 
     unsigned int mtl_diff = obj_get_mtrl_map(O, 0, OBJ_KD); 
-    unsigned int mtl_norm = obj_get_mtrl_map(O, 0, OBJ_KA); 
+    unsigned int mtl_norm = obj_get_mtrl_map(O, 0, OBJ_KA);
 
     GLuint diff_tex = mtl_diff;
     GLuint spec_tex = mtl_spec;

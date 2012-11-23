@@ -1,6 +1,6 @@
 varying vec3 var_L;
 varying vec3 var_N;
-attribute vec3 tangent;
+//attribute vec3 tangent;
 
 void main()
 {
