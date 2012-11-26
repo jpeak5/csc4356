@@ -25,7 +25,7 @@ void main()
     float kd = max(dot(N, L), 0.0);
     float ks = pow(max(dot(N, H), 0.0), n);
 
-    vec3 rgb = D.rgb * kd + S.rgb * ks;
+    vec3 rgb = D.rgb * kd;// + S.rgb * ks;
     vec3  dc = D.rgb + kd;									//diffuse color
     vec3  sc = D.rgb + ks;									//specular color
     float a  = D.a;													//alpha value...1.0

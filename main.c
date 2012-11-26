@@ -52,10 +52,16 @@ struct spotlight *S;
 struct spotlight *LS;
 int menu;
 
-
+int spot_toggle = 0;
 plane *P;
 obj *O;
 obj *O13;
+obj *Spot;
+
+float spot_pos_x = 0.0;
+float spot_pos_y = 10.0;
+float spot_pos_z = 0.0;
+
 
 void init_textures()
 {
@@ -135,12 +141,12 @@ void startup(char *filename)
     keyboard_dy = 0.0;
     keyboard_dz = 0.0;
     
-    S->x        = 0.0;
-    S->y        = 0.0;
 
     O = obj_create(filename);
-    O13 = obj_create("obj/thirteen-box.obj");
+    //O13 = obj_create("obj/swept.obj");
     P = plane_create(20);
+
+    Spot = obj_create("obj/spotlight.obj");
 
     init_textures();
     glBindAttribLocationARB(program, 6, "tangent");
@@ -150,6 +156,16 @@ void startup(char *filename)
     //glEnable(GL_LIGHTING);
     //glEnable(GL_LIGHT0);
 
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glPushMatrix();
+    {
+      glRotated(0.0,1.0,0.0,1.0);
+      glTranslated(S->x,S->y, S->z);
+        //glRotated(S->x, S->y, S->z, 0.0);
+      obj_render(Spot);
+    }
+
     
     glClearColor(0.19f, 0.17f, 0.16f, 0.0f);
 
@@ -158,8 +174,6 @@ void startup(char *filename)
 
 void set_spot_pos(int x, int y)
 {
-        //S->x = (GLdouble) x / glutGet(GLUT_WINDOW_WIDTH);
-        //S->y = (GLdouble) x / glutGet(GLUT_WINDOW_HEIGHT);
         S->x = -10.0;
         S->y = 10.0;
         S->z = 2.0;
@@ -195,7 +209,9 @@ void keyboard(unsigned char key, int x, int y)
         case KEY_U: keyboard_dy += 1.0; break;
         case KEY_F: keyboard_dz -= 1.0; break;
         case KEY_B: keyboard_dz += 1.0; break;
-        case KEY_P: set_spot_pos(x,y);
+        case KEY_P: 
+                spot_toggle = (spot_toggle == 1) ? 0 : 1;
+                printf("spot toggle value set to %d", spot_toggle);
     }
 }
 
@@ -222,38 +238,36 @@ static void display(void)
     glLoadIdentity();
 
     GLuint lightLoc = glGetUniformLocation(program, "lightPos");
-    glUniform3f(lightLoc, S->x, S->y, 0.0);
+    glUniform3f(lightLoc, S->x, S->y, S->z);
 
     glRotated(rotation_x, -1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
-
-/*		GLfloat spotDir[]={S->x,S->y,-1.0};
-		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotDir);*/
 		
     init_shader_vars();
 	
 
 
-    glPushMatrix();
-    {
-        //transform mouse to eye coordinates
-        glTranslated(S->x, S->y, S->z);
-    }
-    glPopMatrix();
+        glPushMatrix();
+        {
+          glRotated(0.0,1.0,0.0,1.0);
+          glTranslated(S->x,S->y, S->z);
+            //glRotated(S->x, S->y, S->z, 0.0);
+          obj_render(Spot);
+        }
+        glPopMatrix();
+        glPushMatrix();
+        {
+            //glDisable(GL_LIGHTING);
+            //plane_render(P);
+            glTranslated(0.0, 1.0, 0.0);
+            //obj_render(O13);
+            obj_render(O);
 
-    glPushMatrix();
-    {
-        //glDisable(GL_LIGHTING);
-        //plane_render(P);
-        obj_render(O13);
-        obj_render(O);
-        glTranslated(0.0, 1.0, 0.0);
+            //glEnable(GL_LIGHTING);
+        }
+        glPopMatrix();
 
-        //glEnable(GL_LIGHTING);
-    }
-    glPopMatrix();
-    
     glutSwapBuffers();
 }
 
@@ -283,6 +297,17 @@ void motion(int x, int y)
                                                                                \
         if (zoom < 0.01) zoom = 0.01;                                          \
     }
+    if (click_button == GLUT_MIDDLE_BUTTON)
+    {
+        S->x = click_rotation_x +  90.0 * dy * zoom;                     \
+        S->z = click_rotation_y + 180.0 * dx * zoom;                     \
+                                                                               \
+        if (S->x >   90.0) S->x  =  90.0;                          \
+        if (S->x <  -90.0) S->x  = -90.0;                          \
+        if (S->z >  180.0) S->z -= 360.0;                          \
+        if (S->z < -180.0) S->z += 360.0;                          \
+        
+    }
     
     glutPostRedisplay();
 }
@@ -296,6 +321,20 @@ void mouse(int button, int state, int x, int y)
     click_zoom       = zoom;                                                   \
     click_rotation_x = rotation_x;
     click_rotation_y = rotation_y;
+
+//Wheel reports as button 3(scroll up) and button 4(scroll down)
+if ((button == 3) || (button == 4)) // It's a wheel event
+{
+    //http://stackoverflow.com/questions/14378/using-the-mouse-scrollwheel-in-glut
+    // Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
+    if (state == GLUT_UP) return; // Disregard redundant GLUT_UP events
+    printf("Scroll %s At %d %d\n", (button == 3) ? "Up" : "Down", x, y);
+
+    //keyboard_dz -= 1.0;
+    }else{  // normal button event
+    printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
+    //keyboard_dz += 1.0;
+    }
 }
     
 
@@ -332,12 +371,13 @@ int main(int argc, char** argv) {
 		
     S = malloc(sizeof(struct spotlight));
     LS = malloc(sizeof(struct spotlight));
-    S->x = 1.0;
-    S->y = 2.0;
-    S->z = 2.0;
+
+    S->x = spot_pos_x;
+    S->y = spot_pos_y;
+    S->z = spot_pos_z;
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowSize(640, 480);
+    glutInitWindowSize(1024, 800);
     glutInit(&argc, argv);
 
     glutCreateWindow(argv[1]);
