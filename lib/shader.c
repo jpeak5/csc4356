@@ -43,6 +43,7 @@ void init_shader_vars()
     glUniform2f(brick_size, 0.6, 0.2);
     glUniform2f(brick_frac, 0.9, 0.9);
 
+
 }
 
 /*----------------------------------------------------------------------------*/

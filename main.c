@@ -15,8 +15,11 @@
 #include "util3d/key.h"
 #include "util3d/obj.h"
 #include "util3d/plane.h"
+#include "util3d/image.h"
 #include "lib/shader.h"
 #include "menu.h"
+
+#define KEY_P 'p'
 
 int      last_time;
 
@@ -38,7 +41,16 @@ GLdouble click_rotation_y;
 GLdouble click_nx;
 GLdouble click_ny;
 
+struct spotlight 
+{
+    float x;
+    float y;
+};
+
+struct spotlight *S;
+
 int menu;
+
 
 plane *P;
 obj *O;
@@ -53,27 +65,57 @@ void init_textures()
     GLuint diff_tex = mtl_diff;
     GLuint spec_tex = mtl_spec;
     GLuint norm_tex = mtl_norm;
+		/*
+		 * get an image texture for the spotlight
+		 */
+    int w, h, c, b;
+    void *p = image_read("spotlight.png", &w, &h, &c, &b);
+    int i = image_internal_form(c, b);
+    int e = image_external_form(c);
+    int t = image_external_type(b);
+    image_flip(w, h, c, b, p);
     
+    GLuint spot = 4;
+    glActiveTexture(GL_TEXTURE3);
+    glTexImage2D(GL_TEXTURE_2D, 0, i, w, h, 0, e, t, p);
+    glBindTexture(GL_TEXTURE_2D, spot);   
+
+    free(p);
+
+    GLuint texture = diff_tex;
+    GLboolean in_use = glIsTexture(texture);
+
+    if(in_use){
+        printf("texture %u is in use\n", texture);
+    }
+    else
+    {
+        printf("texture %u is NOT in use\n", texture);
+    }
+
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, diff_tex);
+    //glBindTexture(GL_TEXTURE_2D, diff_tex);
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, spec_tex);
+    //glBindTexture(GL_TEXTURE_2D, spec_tex);
     
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, norm_tex);
+    //glBindTexture(GL_TEXTURE_2D, norm_tex);
+    
     
     glActiveTexture(GL_TEXTURE0);
     
+    /*
     GLint norm = glGetUniformLocation(program, "normal");
     glUniform1i(norm, 2);
-    
+
     GLint spec = glGetUniformLocation(program, "specular");
     glUniform1i(spec, 1);
 
     GLint diff = glGetUniformLocation(program, "diffuse");
     glUniform1i(diff, 0);
-
+    
+    */
 }
 
 void startup(char *filename)
@@ -87,7 +129,7 @@ void startup(char *filename)
     position_x  = 0.0;
     position_y  = 2.0;
     position_z  = 5.0;
-    
+    	
     keyboard_dx = 0.0;
     keyboard_dy = 0.0;
     keyboard_dz = 0.0;
@@ -98,9 +140,10 @@ void startup(char *filename)
     init_textures();
     glBindAttribLocationARB(program, 6, "tangent");
 
+
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    //glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHT0);
 
     
     glClearColor(0.19f, 0.17f, 0.16f, 0.0f);
@@ -136,6 +179,9 @@ void keyboard(unsigned char key, int x, int y)
         case KEY_U: keyboard_dy += 1.0; break;
         case KEY_F: keyboard_dz -= 1.0; break;
         case KEY_B: keyboard_dz += 1.0; break;
+        case KEY_P: 
+            S->x = (float)x;
+            S->y = (float)y;
     }
 }
 
@@ -164,16 +210,23 @@ static void display(void)
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
 
+    //printf("setting new spotlight direction x: %f, y: %f\n", S->x, S->y);
+/*		GLfloat spotDir[]={S->x,S->y,-1.0};
+		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotDir);*/
+		
     init_shader_vars();
+	
+    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
+    glUniform3f(lightLoc, S->x, S->y, 0.5f);
 
     glPushMatrix();
     {
-        glDisable(GL_LIGHTING);
+        //glDisable(GL_LIGHTING);
         //plane_render(P);
         obj_render(O);
         glTranslated(0.0, 1.0, 0.0);
 
-        glEnable(GL_LIGHTING);
+        //glEnable(GL_LIGHTING);
     }
     glPopMatrix();
     
@@ -205,7 +258,8 @@ void motion(int x, int y)
         zoom = click_zoom + dy;                                                \
                                                                                \
         if (zoom < 0.01) zoom = 0.01;                                          \
-    }                                                                          \
+    }
+    
     glutPostRedisplay();
 }
 
@@ -251,6 +305,8 @@ void idle(void)
 /*----------------------------------------------------------------------------*/
 
 int main(int argc, char** argv) {
+		
+		S = malloc(sizeof(struct spotlight));
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(640, 480);
@@ -271,6 +327,8 @@ int main(int argc, char** argv) {
     char *filename = argv[1]; 
     char *shader[argc-2];
     int count;
+    
+    
 
     switch(argc)
     {
