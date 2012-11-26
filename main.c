@@ -75,7 +75,7 @@ void init_textures()
     int t = image_external_type(b);
     image_flip(w, h, c, b, p);
     
-    GLuint spot = 4;
+    GLuint spot;
     glActiveTexture(GL_TEXTURE3);
     glTexImage2D(GL_TEXTURE_2D, 0, i, w, h, 0, e, t, p);
     glBindTexture(GL_TEXTURE_2D, spot);   
@@ -94,18 +94,17 @@ void init_textures()
     }
 
     glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, diff_tex);
+    glBindTexture(GL_TEXTURE_2D, diff_tex);
 
     glActiveTexture(GL_TEXTURE1);
-    //glBindTexture(GL_TEXTURE_2D, spec_tex);
+    glBindTexture(GL_TEXTURE_2D, spec_tex);
     
     glActiveTexture(GL_TEXTURE2);
-    //glBindTexture(GL_TEXTURE_2D, norm_tex);
+    glBindTexture(GL_TEXTURE_2D, norm_tex);
     
     
     glActiveTexture(GL_TEXTURE0);
     
-    /*
     GLint norm = glGetUniformLocation(program, "normal");
     glUniform1i(norm, 2);
 
@@ -115,7 +114,6 @@ void init_textures()
     GLint diff = glGetUniformLocation(program, "diffuse");
     glUniform1i(diff, 0);
     
-    */
 }
 
 void startup(char *filename)
@@ -202,6 +200,9 @@ static void display(void)
     glMatrixMode(GL_PROJECTION);                                               \
     glLoadIdentity();                                                          \
     glFrustum(-lr, lr, -tb, tb, 1.0, 100.0);                                   \
+
+    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
+    glUniform3f(lightLoc, S->x, S->y, 0.5f);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -216,13 +217,11 @@ static void display(void)
 		
     init_shader_vars();
 	
-    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
-    glUniform3f(lightLoc, S->x, S->y, 0.5f);
 
     glPushMatrix();
     {
         //glDisable(GL_LIGHTING);
-        //plane_render(P);
+        plane_render(P);
         obj_render(O);
         glTranslated(0.0, 1.0, 0.0);
 
