@@ -202,7 +202,7 @@ static void display(void)
     glFrustum(-lr, lr, -tb, tb, 1.0, 100.0);                                   \
 
     GLuint lightLoc = glGetUniformLocation(program, "lightPos");
-    glUniform3f(lightLoc, S->x, S->y, 0.5f);
+    glUniform3f(lightLoc, S->x, S->y, 5.0f);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -221,7 +221,7 @@ static void display(void)
     glPushMatrix();
     {
         //glDisable(GL_LIGHTING);
-        plane_render(P);
+        //plane_render(P);
         obj_render(O);
         glTranslated(0.0, 1.0, 0.0);
 
@@ -305,7 +305,9 @@ void idle(void)
 
 int main(int argc, char** argv) {
 		
-		S = malloc(sizeof(struct spotlight));
+    S = malloc(sizeof(struct spotlight));
+    S->x = 1.0;
+    S->y = 2.0;
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(640, 480);
