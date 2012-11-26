@@ -5,7 +5,7 @@ EXEC= p2
 OBJS= main.o plane.o image.o shader.o obj.o menu.o
 
 ifeq ($(shell uname), Linux)
-    LIBS= -lglut -lGLEW -lGL -ltiff -ljpeg -lpng -lm
+    LIBS= -lGLU -lglut -lGLEW -lGL -ltiff -ljpeg -lpng -lm
 else ifeq ($(shell uname), Darwin)
     LIBS= -lGLEW -framework GLUT -framework OpenGL
 else

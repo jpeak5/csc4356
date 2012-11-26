@@ -45,15 +45,17 @@ struct spotlight
 {
     float x;
     float y;
+    float z;
 };
 
 struct spotlight *S;
-
+struct spotlight *LS;
 int menu;
 
 
 plane *P;
 obj *O;
+obj *O13;
 
 void init_textures()
 {
@@ -93,6 +95,7 @@ void init_textures()
         printf("texture %u is NOT in use\n", texture);
     }
 
+    /*
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diff_tex);
 
@@ -101,12 +104,12 @@ void init_textures()
     
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, norm_tex);
-    
+    */
     
     glActiveTexture(GL_TEXTURE0);
     
     GLint norm = glGetUniformLocation(program, "normal");
-    glUniform1i(norm, 2);
+    glUniform1i(norm, 4);
 
     GLint spec = glGetUniformLocation(program, "specular");
     glUniform1i(spec, 1);
@@ -126,13 +129,17 @@ void startup(char *filename)
 
     position_x  = 0.0;
     position_y  = 2.0;
-    position_z  = 5.0;
+    position_z  = 15.0;
     	
     keyboard_dx = 0.0;
     keyboard_dy = 0.0;
     keyboard_dz = 0.0;
     
+    S->x        = 0.0;
+    S->y        = 0.0;
+
     O = obj_create(filename);
+    O13 = obj_create("obj/thirteen-box.obj");
     P = plane_create(20);
 
     init_textures();
@@ -149,6 +156,17 @@ void startup(char *filename)
 }
 
 
+void set_spot_pos(int x, int y)
+{
+        //S->x = (GLdouble) x / glutGet(GLUT_WINDOW_WIDTH);
+        //S->y = (GLdouble) x / glutGet(GLUT_WINDOW_HEIGHT);
+        S->x = -10.0;
+        S->y = 10.0;
+        S->z = 2.0;
+        printf("\nincoming mouse coords x: %d, y: %d\nSetting spot values x: %f, y: %f\n",x,y,S->x,S->y);
+        LS = S;
+    
+}
 /*----------------------------------------------------------------------------*/
 
 void keyboardup(unsigned char key, int x, int y)
@@ -177,9 +195,7 @@ void keyboard(unsigned char key, int x, int y)
         case KEY_U: keyboard_dy += 1.0; break;
         case KEY_F: keyboard_dz -= 1.0; break;
         case KEY_B: keyboard_dz += 1.0; break;
-        case KEY_P: 
-            S->x = (float)x;
-            S->y = (float)y;
+        case KEY_P: set_spot_pos(x,y);
     }
 }
 
@@ -201,27 +217,36 @@ static void display(void)
     glLoadIdentity();                                                          \
     glFrustum(-lr, lr, -tb, tb, 1.0, 100.0);                                   \
 
-    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
-    glUniform3f(lightLoc, S->x, S->y, 5.0f);
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
+    glUniform3f(lightLoc, S->x, S->y, 0.0);
 
     glRotated(rotation_x, -1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
 
-    //printf("setting new spotlight direction x: %f, y: %f\n", S->x, S->y);
 /*		GLfloat spotDir[]={S->x,S->y,-1.0};
 		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spotDir);*/
 		
     init_shader_vars();
 	
 
+
+    glPushMatrix();
+    {
+        //transform mouse to eye coordinates
+        glTranslated(S->x, S->y, S->z);
+    }
+    glPopMatrix();
+
     glPushMatrix();
     {
         //glDisable(GL_LIGHTING);
         //plane_render(P);
+        obj_render(O13);
         obj_render(O);
         glTranslated(0.0, 1.0, 0.0);
 
@@ -306,8 +331,10 @@ void idle(void)
 int main(int argc, char** argv) {
 		
     S = malloc(sizeof(struct spotlight));
+    LS = malloc(sizeof(struct spotlight));
     S->x = 1.0;
     S->y = 2.0;
+    S->z = 2.0;
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(640, 480);
