@@ -4,7 +4,6 @@ uniform vec2 brick_size;
 uniform vec2 brick_pct;
 uniform vec3 test_color;
 
-varying vec3 lp;
 varying vec2 MCposition;
 varying float LightIntensity;
 

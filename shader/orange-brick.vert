@@ -11,7 +11,7 @@ void main()
     vec4 lp = gl_ModelViewMatrix * lightPos_n;
 
     //vec3 ecPosition = vec3(gl_ModelViewProjectionMatrixInverse * gl_Vertex); 
-    vec3 ecPosition = vec3(lightPos); 
+    vec3 ecPosition = vec3(lightPos_n); 
 
     vec3 tnorm      = normalize(gl_NormalMatrix * gl_Normal); 
     vec3 lightVec   = normalize(lp.xyz - ecPosition); 

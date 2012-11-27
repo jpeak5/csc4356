@@ -46,21 +46,23 @@ struct spotlight
     float x;
     float y;
     float z;
+    float rotation_x;
+    float rotation_y;
+
 };
 
 struct spotlight *S;
 struct spotlight *LS;
 int menu;
 
-int spot_toggle = 0;
 plane *P;
 obj *O;
 obj *O13;
 obj *Spot;
 
-float spot_pos_x = 0.0;
-float spot_pos_y = 10.0;
-float spot_pos_z = 0.0;
+float spot_pos_x;
+float spot_pos_y;
+float spot_pos_z;
 
 
 void init_textures()
@@ -160,8 +162,7 @@ void startup(char *filename)
     glLoadIdentity();
     glPushMatrix();
     {
-      glRotated(0.0,1.0,0.0,1.0);
-      glTranslated(S->x,S->y, S->z);
+      glRotated(S->x,S->y, S->z, 1.0);
         //glRotated(S->x, S->y, S->z, 0.0);
       obj_render(Spot);
     }
@@ -172,13 +173,12 @@ void startup(char *filename)
 }
 
 
-void set_spot_pos(int x, int y)
+void set_spot_pos(float x, float y, float z)
 {
-        S->x = -10.0;
-        S->y = 10.0;
-        S->z = 2.0;
+        S->x = x;
+        S->y = y;
+        S->z = z;
         printf("\nincoming mouse coords x: %d, y: %d\nSetting spot values x: %f, y: %f\n",x,y,S->x,S->y);
-        LS = S;
     
 }
 /*----------------------------------------------------------------------------*/
@@ -209,9 +209,6 @@ void keyboard(unsigned char key, int x, int y)
         case KEY_U: keyboard_dy += 1.0; break;
         case KEY_F: keyboard_dz -= 1.0; break;
         case KEY_B: keyboard_dz += 1.0; break;
-        case KEY_P: 
-                spot_toggle = (spot_toggle == 1) ? 0 : 1;
-                printf("spot toggle value set to %d", spot_toggle);
     }
 }
 
@@ -240,6 +237,7 @@ static void display(void)
     GLuint lightLoc = glGetUniformLocation(program, "lightPos");
     glUniform3f(lightLoc, S->x, S->y, S->z);
 
+    printf("passing uniform lightPos: x: %f y: %f z: %f\n",S->x, S->y, S->z);
     glRotated(rotation_x, -1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
@@ -250,8 +248,11 @@ static void display(void)
 
         glPushMatrix();
         {
-          glRotated(0.0,1.0,0.0,1.0);
-          glTranslated(S->x,S->y, S->z);
+          glTranslated(spot_pos_x+S->rotation_x, -S->rotation_y/3.0, spot_pos_z+3.0);
+          glScalef(0.2,0.2,0.2);
+          set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
+          //glRotated(S->rotation_x,-1.0,0.0,0.0);
+          //glRotated(S->rotation_y,0.0,1.0,0.0);
             //glRotated(S->x, S->y, S->z, 0.0);
           obj_render(Spot);
         }
@@ -259,7 +260,7 @@ static void display(void)
         glPushMatrix();
         {
             //glDisable(GL_LIGHTING);
-            //plane_render(P);
+            plane_render(P);
             glTranslated(0.0, 1.0, 0.0);
             //obj_render(O13);
             obj_render(O);
@@ -272,6 +273,15 @@ static void display(void)
 }
 
 /*----------------------------------------------------------------------------*/
+void passive_motion(int x, int y)
+{
+    GLdouble nx = (GLdouble) x / glutGet(GLUT_WINDOW_WIDTH);
+    GLdouble ny = (GLdouble) y / glutGet(GLUT_WINDOW_HEIGHT);
+
+    GLdouble dx = nx - click_nx;
+    GLdouble dy = ny - click_ny;
+
+}
 
 void motion(int x, int y)
 {
@@ -299,16 +309,23 @@ void motion(int x, int y)
     }
     if (click_button == GLUT_MIDDLE_BUTTON)
     {
-        S->x = click_rotation_x +  90.0 * dy * zoom;                     \
-        S->z = click_rotation_y + 180.0 * dx * zoom;                     \
+        S->rotation_x = click_rotation_x +  90.0 * dx * zoom;                     \
+        S->rotation_y = click_rotation_y + 180.0 * dy * zoom;                     \
                                                                                \
-        if (S->x >   90.0) S->x  =  90.0;                          \
-        if (S->x <  -90.0) S->x  = -90.0;                          \
-        if (S->z >  180.0) S->z -= 360.0;                          \
-        if (S->z < -180.0) S->z += 360.0;                          \
-        
+        if (S->rotation_x >   90.0) S->rotation_x  =  90.0;                          \
+        if (S->rotation_x <  -90.0) S->rotation_x  = -90.0;                          \
+        if (S->rotation_y >  180.0) S->rotation_y -= 360.0;                          \
+        if (S->rotation_y < -180.0) S->rotation_y += 360.0;                          \
+
+        printf("function inputs are x: %d, y: %d\n",x,y);
+        printf("intermediate vars are cl_rot_x: %f cl_rot_y: %f\n", click_rotation_x, click_rotation_y);
+        printf("more intermediate vars are rot_x: %f rot_y: %f\n", rotation_x, rotation_y);
+        printf("even more intermediate vars are dx: %f dy: %f zoom: %f\n", dx, dy, zoom);
+        printf("function outputs are S->rotation_x: %f, S->rotation_y: %f\n",S->rotation_x,S->rotation_y);
+
+
     }
-    
+
     glutPostRedisplay();
 }
 
@@ -382,6 +399,7 @@ int main(int argc, char** argv) {
 
     glutCreateWindow(argv[1]);
 
+    glutPassiveMotionFunc(passive_motion);
     glutKeyboardUpFunc(keyboardup);
     glutKeyboardFunc(keyboard);
     glutReshapeFunc(reshape);
