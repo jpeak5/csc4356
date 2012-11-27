@@ -68,14 +68,17 @@ float spot_pos_z;
 void init_textures()
 {
 
+    /*
     unsigned int mtl_spec = obj_get_mtrl_map(O, 0, OBJ_KS); 
     unsigned int mtl_diff = obj_get_mtrl_map(O, 0, OBJ_KD); 
     unsigned int mtl_norm = obj_get_mtrl_map(O, 0, OBJ_KA);
-
+    */
+    /*
     GLuint diff_tex = mtl_diff;
     GLuint spec_tex = mtl_spec;
     GLuint norm_tex = mtl_norm;
-		/*
+	*/
+    /*
 		 * get an image texture for the spotlight
 		 */
     int w, h, c, b;
@@ -85,6 +88,7 @@ void init_textures()
     int t = image_external_type(b);
     image_flip(w, h, c, b, p);
     
+
     GLuint spot;
     glActiveTexture(GL_TEXTURE3);
     glTexImage2D(GL_TEXTURE_2D, 0, i, w, h, 0, e, t, p);
@@ -92,6 +96,7 @@ void init_textures()
 
     free(p);
 
+    /*
     GLuint texture = diff_tex;
     GLboolean in_use = glIsTexture(texture);
 
@@ -102,7 +107,8 @@ void init_textures()
     {
         printf("texture %u is NOT in use\n", texture);
     }
-
+    */
+    
     /*
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diff_tex);
@@ -178,7 +184,7 @@ void set_spot_pos(float x, float y, float z)
         S->x = x;
         S->y = y;
         S->z = z;
-        printf("\nincoming mouse coords x: %d, y: %d\nSetting spot values x: %f, y: %f\n",x,y,S->x,S->y);
+        printf("\nincoming mouse coords x: %f, y: %f z: %f\n",x,y,z);
     
 }
 /*----------------------------------------------------------------------------*/
@@ -218,6 +224,22 @@ static void reshape(int w, int h)
     glViewport(0, 0, w, h);
 }
 
+void set_spot()
+{
+    glPushMatrix();
+    {
+      glTranslated(spot_pos_x+S->rotation_x, -S->rotation_y/3.0, spot_pos_z+3.0);
+      glScalef(0.2,0.2,0.2);
+      set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
+      //glRotated(S->rotation_x,-1.0,0.0,0.0);
+      //glRotated(S->rotation_y,0.0,1.0,0.0);
+        //glRotated(S->x, S->y, S->z, 0.0);
+      obj_render(Spot);
+    }
+    glPopMatrix();
+
+}
+
 static void display(void)
 {
     GLdouble tb = zoom;                                                        \
@@ -244,19 +266,9 @@ static void display(void)
 		
     init_shader_vars();
 	
+    set_spot();
 
 
-        glPushMatrix();
-        {
-          glTranslated(spot_pos_x+S->rotation_x, -S->rotation_y/3.0, spot_pos_z+3.0);
-          glScalef(0.2,0.2,0.2);
-          set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
-          //glRotated(S->rotation_x,-1.0,0.0,0.0);
-          //glRotated(S->rotation_y,0.0,1.0,0.0);
-            //glRotated(S->x, S->y, S->z, 0.0);
-          obj_render(Spot);
-        }
-        glPopMatrix();
         glPushMatrix();
         {
             //glDisable(GL_LIGHTING);
@@ -275,11 +287,6 @@ static void display(void)
 /*----------------------------------------------------------------------------*/
 void passive_motion(int x, int y)
 {
-    GLdouble nx = (GLdouble) x / glutGet(GLUT_WINDOW_WIDTH);
-    GLdouble ny = (GLdouble) y / glutGet(GLUT_WINDOW_HEIGHT);
-
-    GLdouble dx = nx - click_nx;
-    GLdouble dy = ny - click_ny;
 
 }
 
