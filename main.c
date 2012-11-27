@@ -43,23 +43,25 @@ GLdouble click_ny;
 
 struct spotlight 
 {
-    GLdouble * location;
-    GLdouble * obj_anchor;
+    GLdouble mv_location[4];
+    GLdouble obj_anchor[4];
     float x;
     float y;
     float z;
     float rotation_x;
     float rotation_y;
+    int num_verts;
+    obj *Spot;
 
 };
 
 struct spotlight *S;
+
 int menu;
 
 plane *P;
 obj *O;
 obj *O13;
-obj *Spot;
 
 
 float spot_pos_x;
@@ -156,21 +158,25 @@ void startup(char *filename)
     //O13 = obj_create("obj/swept.obj");
     P = plane_create(20);
 
-    Spot = obj_create("obj/spotlight.obj");
+    //create our spotlight
+    S->Spot = obj_create("obj/spotlight.obj");
+
+    //knowing this will help us grab a reference vert
+    S->num_verts = obj_num_vert(S->Spot);
 
     //set the obj anchor vector
     //for later transformation 
     //into light source eye coord
-    /*
     float *a;
-    obj_get_vert_v(Spot, 4, a);
+    obj_get_vert_v(S->Spot, S->num_verts-1, a);
     
     S->obj_anchor[0] = (GLdouble)a[0];
     S->obj_anchor[1] = (GLdouble)a[1];
     S->obj_anchor[2] = (GLdouble)a[2];
     S->obj_anchor[3] = (GLdouble)a[3];
     printf("the coordinate of vert 4 is {%f,%f,%f, %f}", S->obj_anchor[0], S->obj_anchor[1], S->obj_anchor[2], S->obj_anchor[3]);
-    */
+
+
     init_textures();
     glBindAttribLocationARB(program, 6, "tangent");
 
@@ -185,7 +191,7 @@ void startup(char *filename)
     {
       glRotated(S->x,S->y, S->z, 1.0);
         //glRotated(S->x, S->y, S->z, 0.0);
-      obj_render(Spot);
+      obj_render(S->Spot);
     }
 
     
@@ -194,14 +200,6 @@ void startup(char *filename)
 }
 
 
-void set_spot_pos(float x, float y, float z)
-{
-        S->x = x;
-        S->y = y;
-        S->z = z;
-        printf("\nincoming mouse coords x: %f, y: %f z: %f\n",x,y,z);
-    
-}
 /*----------------------------------------------------------------------------*/
 
 void keyboardup(unsigned char key, int x, int y)
@@ -253,6 +251,16 @@ void get_eye_coords(GLdouble m[16], GLdouble *v, GLdouble *w)
     printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}", w[0], w[1], w[2], w[3]);
 }
 
+void set_spot_pos(float x, float y, float z)
+{
+
+
+    S->x = x;
+    S->y = y;
+    S->z = z;
+    
+}
+
 void set_spot()
 {
     GLuint lightLoc = glGetUniformLocation(program, "lightPos");
@@ -269,7 +277,7 @@ void set_spot()
 
       set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
       
-      obj_render(Spot);
+      obj_render(S->Spot);
       
       //get the current matrix, and use it
       //to determine the eye coordinates of
@@ -279,8 +287,7 @@ void set_spot()
 
       GLdouble e[4];
 
-      //get_eye_coords(m, S->obj_anchor, e); 
-      S->location = e;
+      S->mv_location = e;
 
     }
     glPopMatrix();
@@ -325,7 +332,7 @@ static void display(void)
           glGetDoublev(GL_MODELVIEW, m);
           GLdouble e[4];
 
-          //get_eye_coords(m, S->location, e);
+          //get_eye_coords(m, S->mv_location, e);
 
           //glEnable(GL_LIGHTING);
         }
