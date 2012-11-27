@@ -14,10 +14,10 @@ void main()
 {
     vec3 ecPosition = vec3(gl_ModelViewMatrix * gl_Vertex);
 
-    var_L = gl_LightSource[0].position.xyz;
+    //var_L = gl_LightSource[0].position.xyz;
     var_I = gl_Vertex * gl_ModelViewMatrix;
     //vec4 light = vec4(lightPos.x, lightPos.y, lightPos.z, 0.0);
-    //var_L = lightPos;
+    var_L = lightPos;
     var_N = normalize(gl_NormalMatrix * gl_Normal);
     vec3 lightVec = normalize(lightPos - ecPosition);
 
