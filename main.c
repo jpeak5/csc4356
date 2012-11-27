@@ -98,6 +98,7 @@ void init_textures()
     glGenTextures(1, &spot);
 
     glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, spot);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -106,7 +107,6 @@ void init_textures()
 
     glTexImage2D(GL_TEXTURE_2D, 0, i, w, h, 0, e, t, p);
 
-    glBindTexture(GL_TEXTURE_2D, spot);
 
     free(p);
 
@@ -148,7 +148,7 @@ void init_textures()
     GLint norm = glGetUniformLocation(program, "normal");
     glUniform1i(norm, 1);
 
-    GLint diff = glGetUniformLocation(program, "diffuse");
+    GLint diff = glGetUniformLocation(program, "diffSamp");
     glUniform1i(diff, 0);
     
 }
@@ -323,9 +323,10 @@ void set_spot()
     }
     glPopMatrix();
 
+    //use spherical geometry to approximate the light source position
     GLuint theta = glGetUniformLocation(program,"theta");
-    GLuint rho   = glGetUniformLocation(program, "rho");
-    GLuint radius= glGetUniformLocation(program, "radius");
+    GLuint rho   = glGetUniformLocation(program,"rho");
+    GLuint radius= glGetUniformLocation(program,"radius");
 
     glUniform1f(theta,  S->rotation_x);
     glUniform1f(rho,    S->rotation_y);
