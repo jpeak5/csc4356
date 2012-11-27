@@ -43,6 +43,7 @@ GLdouble click_ny;
 
 struct spotlight 
 {
+    GLfloat spot_pos_mv[4];
     float x;
     float y;
     float z;
@@ -226,14 +227,19 @@ static void reshape(int w, int h)
 
 void set_spot()
 {
+    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
+    glUniform3f(lightLoc, S->x, S->y, S->z);
+    printf("passing uniform lightPos: x: %f y: %f z: %f\n",S->x, S->y, S->z);
+
     glPushMatrix();
     {
-      glTranslated(spot_pos_x+S->rotation_x, -S->rotation_y/3.0, spot_pos_z+3.0);
       glScalef(0.2,0.2,0.2);
+      glRotated(S->rotation_x,0.0,1.0,0.0);
+      glRotated(S->rotation_y,1.0,0.0,0.0);
+      glTranslated(0.0, 6.0, 20.0);
+
       set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
-      //glRotated(S->rotation_x,-1.0,0.0,0.0);
-      //glRotated(S->rotation_y,0.0,1.0,0.0);
-        //glRotated(S->x, S->y, S->z, 0.0);
+      
       obj_render(Spot);
     }
     glPopMatrix();
@@ -256,10 +262,6 @@ static void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
-    glUniform3f(lightLoc, S->x, S->y, S->z);
-
-    printf("passing uniform lightPos: x: %f y: %f z: %f\n",S->x, S->y, S->z);
     glRotated(rotation_x, -1.0, 0.0, 0.0);
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
@@ -316,13 +318,15 @@ void motion(int x, int y)
     }
     if (click_button == GLUT_MIDDLE_BUTTON)
     {
-        S->rotation_x = click_rotation_x +  90.0 * dx * zoom;                     \
-        S->rotation_y = click_rotation_y + 180.0 * dy * zoom;                     \
-                                                                               \
-        if (S->rotation_x >   90.0) S->rotation_x  =  90.0;                          \
-        if (S->rotation_x <  -90.0) S->rotation_x  = -90.0;                          \
-        if (S->rotation_y >  180.0) S->rotation_y -= 360.0;                          \
-        if (S->rotation_y < -180.0) S->rotation_y += 360.0;                          \
+        float xa = 2.0; // x acceleration 
+        float ya = 0.5; // y acceleration 
+        S->rotation_x = click_rotation_x + 360.0 * dx * zoom * xa;
+        S->rotation_y = click_rotation_y + 360.0 * dy * zoom * ya;
+                                                            
+        if (S->rotation_x >  360.0) S->rotation_x  =  360.0;
+        if (S->rotation_x < -360.0) S->rotation_x  = -360.0;
+        if (S->rotation_y >  360.0) S->rotation_y -=  360.0;
+        if (S->rotation_y < -360.0) S->rotation_y +=  360.0;
 
         printf("function inputs are x: %d, y: %d\n",x,y);
         printf("intermediate vars are cl_rot_x: %f cl_rot_y: %f\n", click_rotation_x, click_rotation_y);
@@ -338,6 +342,8 @@ void motion(int x, int y)
 
 void mouse(int button, int state, int x, int y)
 {
+    //get the mouse position in terms of the window
+    //value will be in the range [-1.0, 1.0]
     click_nx = (GLdouble) x / glutGet(GLUT_WINDOW_WIDTH);
     click_ny = (GLdouble) y / glutGet(GLUT_WINDOW_HEIGHT);
 
@@ -352,11 +358,11 @@ if ((button == 3) || (button == 4)) // It's a wheel event
     //http://stackoverflow.com/questions/14378/using-the-mouse-scrollwheel-in-glut
     // Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
     if (state == GLUT_UP) return; // Disregard redundant GLUT_UP events
-    printf("Scroll %s At %d %d\n", (button == 3) ? "Up" : "Down", x, y);
+    //printf("Scroll %s At %d %d\n", (button == 3) ? "Up" : "Down", x, y);
 
     //keyboard_dz -= 1.0;
     }else{  // normal button event
-    printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
+    //printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
     //keyboard_dz += 1.0;
     }
 }
