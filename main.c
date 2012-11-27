@@ -43,7 +43,8 @@ GLdouble click_ny;
 
 struct spotlight 
 {
-    GLfloat spot_pos_mv[4];
+    GLdouble * location;
+    GLdouble * obj_anchor;
     float x;
     float y;
     float z;
@@ -53,13 +54,13 @@ struct spotlight
 };
 
 struct spotlight *S;
-struct spotlight *LS;
 int menu;
 
 plane *P;
 obj *O;
 obj *O13;
 obj *Spot;
+
 
 float spot_pos_x;
 float spot_pos_y;
@@ -157,6 +158,19 @@ void startup(char *filename)
 
     Spot = obj_create("obj/spotlight.obj");
 
+    //set the obj anchor vector
+    //for later transformation 
+    //into light source eye coord
+    /*
+    float *a;
+    obj_get_vert_v(Spot, 4, a);
+    
+    S->obj_anchor[0] = (GLdouble)a[0];
+    S->obj_anchor[1] = (GLdouble)a[1];
+    S->obj_anchor[2] = (GLdouble)a[2];
+    S->obj_anchor[3] = (GLdouble)a[3];
+    printf("the coordinate of vert 4 is {%f,%f,%f, %f}", S->obj_anchor[0], S->obj_anchor[1], S->obj_anchor[2], S->obj_anchor[3]);
+    */
     init_textures();
     glBindAttribLocationARB(program, 6, "tangent");
 
@@ -225,11 +239,26 @@ static void reshape(int w, int h)
     glViewport(0, 0, w, h);
 }
 
+/**
+ * m - a gl matrix
+ * o - the vector you'd like to transfor
+ * t - the transformed vector
+ */
+void get_eye_coords(GLdouble m[16], GLdouble *v, GLdouble *w)
+{
+    w[0] = v[0]*m[0] + v[1]*m[4] + v[2]* m[8]  + v[3] *m[12];
+    w[0] = v[0]*m[1] + v[1]*m[5] + v[2]* m[9]  + v[3] *m[13];
+    w[0] = v[0]*m[2] + v[1]*m[6] + v[2]* m[10] + v[3] *m[14];
+    w[0] = v[0]*m[3] + v[1]*m[7] + v[2]* m[11] + v[3] *m[15];
+    printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}", w[0], w[1], w[2], w[3]);
+}
+
 void set_spot()
 {
     GLuint lightLoc = glGetUniformLocation(program, "lightPos");
     glUniform3f(lightLoc, S->x, S->y, S->z);
     printf("passing uniform lightPos: x: %f y: %f z: %f\n",S->x, S->y, S->z);
+
 
     glPushMatrix();
     {
@@ -241,8 +270,21 @@ void set_spot()
       set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
       
       obj_render(Spot);
+      
+      //get the current matrix, and use it
+      //to determine the eye coordinates of
+      //any point in the Spot object..
+      GLdouble m[16];
+      glGetDoublev(GL_MODELVIEW, m);
+
+      GLdouble e[4];
+
+      //get_eye_coords(m, S->obj_anchor, e); 
+      S->location = e;
+
     }
     glPopMatrix();
+
 
 }
 
@@ -279,7 +321,13 @@ static void display(void)
             //obj_render(O13);
             obj_render(O);
 
-            //glEnable(GL_LIGHTING);
+          GLdouble m[16];
+          glGetDoublev(GL_MODELVIEW, m);
+          GLdouble e[4];
+
+          //get_eye_coords(m, S->location, e);
+
+          //glEnable(GL_LIGHTING);
         }
         glPopMatrix();
 
@@ -400,7 +448,6 @@ void idle(void)
 int main(int argc, char** argv) {
 		
     S = malloc(sizeof(struct spotlight));
-    LS = malloc(sizeof(struct spotlight));
 
     S->x = spot_pos_x;
     S->y = spot_pos_y;
