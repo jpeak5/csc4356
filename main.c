@@ -50,6 +50,7 @@ struct spotlight
     float z;
     float rotation_x;
     float rotation_y;
+    float radius;
     int num_verts;
     obj *Spot;
 
@@ -156,10 +157,12 @@ void startup(char *filename)
 
     O = obj_create(filename);
     //O13 = obj_create("obj/swept.obj");
-    //P = plane_create(20);
+    P = plane_create(20);
 
     //create our spotlight
     S->Spot = obj_create("obj/spotlight.obj");
+
+    S->radius = 30.0;
 
     //knowing this will help us grab a reference vert
     S->num_verts = obj_num_vert(S->Spot);
@@ -272,7 +275,7 @@ void set_spot()
         glScalef(0.2,0.2,0.2);
         glRotated(S->rotation_x,0.0,1.0,0.0);
         glRotated(S->rotation_y,1.0,0.0,0.0);
-        glTranslated(0.0, 6.0, 20.0);
+        glTranslated(0.0, 6.0, S->radius);
 
         set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
 
@@ -311,9 +314,9 @@ void set_spot()
 
     glUniform1f(theta,  S->rotation_x);
     glUniform1f(rho,    S->rotation_y);
-    glUniform1f(radius, 20.0);
+    glUniform1f(radius, S->radius);
 
-    printf("passing uniforms: theta: %f rho: %f radius: %f\n",S->rotation_x, S->rotation_y, 20.0);
+    printf("passing uniforms: theta: %f rho: %f radius: %f\n",S->rotation_x, S->rotation_y, S->radius);
 
 }
 

@@ -1,7 +1,6 @@
 varying vec3 var_L;
 varying vec3 var_N;
 varying vec4 var_I;
-uniform vec3 lightPos;
 uniform float theta;
 uniform float rho;
 uniform float radius;
@@ -17,9 +16,7 @@ void main()
 {
     vec3 ecPosition = vec3(gl_ModelViewMatrix * gl_Vertex);
 
-    //var_L = gl_LightSource[0].position.xyz;
-    var_I = gl_Vertex * gl_ModelViewMatrix;
-    //vec4 light = vec4(lightPos.x, lightPos.y, lightPos.z, 0.0);
+    //hack to construct a plausible light position
     float x,y,z;
     x = radius * cos(theta) * sin(rho);
     y = radius * sin(theta) * sin(rho);
@@ -27,7 +24,7 @@ void main()
 
     var_L = vec3(x,y,z);
     var_N = normalize(gl_NormalMatrix * gl_Normal);
-    vec3 lightVec = normalize(lightPos - ecPosition);
+    vec3 lightVec = normalize(var_L - ecPosition);
 
     vec3 reflectVec = reflect(-lightVec, var_N);
     vec3 viewVec = normalize(-ecPosition);
@@ -43,8 +40,6 @@ void main()
     LightIntensity = DiffuseContribution * diffuse + SpecularContribution * spec;
     MCposition = gl_Vertex.xy;
 
-
-		//printf("light source position = x: %f y: %f z: %f", var_L.x, var_L.y, var_L.z);
     gl_TexCoord[0] = gl_MultiTexCoord0;
     gl_Position = ftransform();
 }

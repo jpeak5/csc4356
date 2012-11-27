@@ -1,6 +1,5 @@
 uniform sampler2D diffuse;
 uniform sampler2D specular;
-uniform vec3 lightPos;
 //uniform sampler2D normal;
 varying vec3 var_L;
 varying vec3 var_N;
@@ -11,7 +10,7 @@ varying vec2 MCposition;
 void main()
 {
     vec3 V   = vec3(0.0,0.0,1.0);
-    vec3 L   = normalize(lightPos);
+    vec3 L   = normalize(var_L);
     vec3 N   = var_N;
     vec3 H   = normalize(L + V);
 
