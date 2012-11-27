@@ -95,9 +95,18 @@ void init_textures()
     
 
     GLuint spot;
-    glActiveTexture(GL_TEXTURE3);
+    glGenTextures(1, &spot);
+
+    glActiveTexture(GL_TEXTURE4);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
     glTexImage2D(GL_TEXTURE_2D, 0, i, w, h, 0, e, t, p);
-    glBindTexture(GL_TEXTURE_2D, spot);   
+
+    glBindTexture(GL_TEXTURE_2D, spot);
 
     free(p);
 
@@ -127,11 +136,17 @@ void init_textures()
     
     glActiveTexture(GL_TEXTURE0);
     
-    GLint norm = glGetUniformLocation(program, "normal");
-    glUniform1i(norm, 4);
+    GLint spotlight = glGetUniformLocation(program, "spotlight");
+    glUniform1i(spotlight, 4);
+
+    GLint shine = glGetUniformLocation(program, "shiny");
+    glUniform1i(shine, 3);
 
     GLint spec = glGetUniformLocation(program, "specular");
-    glUniform1i(spec, 1);
+    glUniform1i(spec, 2);
+
+    GLint norm = glGetUniformLocation(program, "normal");
+    glUniform1i(norm, 1);
 
     GLint diff = glGetUniformLocation(program, "diffuse");
     glUniform1i(diff, 0);
@@ -350,7 +365,7 @@ static void display(void)
         glPushMatrix();
         {
             //glDisable(GL_LIGHTING);
-            //plane_render(P);
+            plane_render(P);
             glTranslated(0.0, 1.0, 0.0);
             //obj_render(O13);
             obj_render(O);
