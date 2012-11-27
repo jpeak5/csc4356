@@ -156,7 +156,7 @@ void startup(char *filename)
 
     O = obj_create(filename);
     //O13 = obj_create("obj/swept.obj");
-    P = plane_create(20);
+    //P = plane_create(20);
 
     //create our spotlight
     S->Spot = obj_create("obj/spotlight.obj");
@@ -169,12 +169,12 @@ void startup(char *filename)
     //into light source eye coord
     float *a;
     obj_get_vert_v(S->Spot, S->num_verts-1, a);
-    
+    a[3] = 0.0;
     S->obj_anchor[0] = (GLdouble)a[0];
     S->obj_anchor[1] = (GLdouble)a[1];
     S->obj_anchor[2] = (GLdouble)a[2];
     S->obj_anchor[3] = (GLdouble)a[3];
-    printf("the coordinate of vert 4 is {%f,%f,%f, %f}", S->obj_anchor[0], S->obj_anchor[1], S->obj_anchor[2], S->obj_anchor[3]);
+    printf("the coordinate of vert %d is {%f,%f,%f, %f}", S->num_verts-1,S->obj_anchor[0], S->obj_anchor[1], S->obj_anchor[2], S->obj_anchor[3]);
 
 
     init_textures();
@@ -189,8 +189,8 @@ void startup(char *filename)
     glLoadIdentity();
     glPushMatrix();
     {
-      glRotated(S->x,S->y, S->z, 1.0);
-        //glRotated(S->x, S->y, S->z, 0.0);
+      glRotated(S->mv_location[0],S->mv_location[1], S->mv_location[2], 1.0);
+        //glRotated(S->mv_location[0], S->mv_location[1], S->mv_location[2], 0.0);
       obj_render(S->Spot);
     }
 
@@ -248,50 +248,72 @@ void get_eye_coords(GLdouble m[16], GLdouble *v, GLdouble *w)
     w[0] = v[0]*m[1] + v[1]*m[5] + v[2]* m[9]  + v[3] *m[13];
     w[0] = v[0]*m[2] + v[1]*m[6] + v[2]* m[10] + v[3] *m[14];
     w[0] = v[0]*m[3] + v[1]*m[7] + v[2]* m[11] + v[3] *m[15];
-    printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}", w[0], w[1], w[2], w[3]);
+    //printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}", w[0], w[1], w[2], w[3]);
 }
 
 void set_spot_pos(float x, float y, float z)
 {
 
 
-    S->x = x;
-    S->y = y;
-    S->z = z;
+    S->mv_location[0] = x;
+    S->mv_location[1] = y;
+    S->mv_location[2] = z;
     
 }
 
 void set_spot()
 {
-    GLuint lightLoc = glGetUniformLocation(program, "lightPos");
-    glUniform3f(lightLoc, S->x, S->y, S->z);
-    printf("passing uniform lightPos: x: %f y: %f z: %f\n",S->x, S->y, S->z);
+
 
 
     glPushMatrix();
     {
-      glScalef(0.2,0.2,0.2);
-      glRotated(S->rotation_x,0.0,1.0,0.0);
-      glRotated(S->rotation_y,1.0,0.0,0.0);
-      glTranslated(0.0, 6.0, 20.0);
 
-      set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
-      
-      obj_render(S->Spot);
-      
-      //get the current matrix, and use it
-      //to determine the eye coordinates of
-      //any point in the Spot object..
-      GLdouble m[16];
-      glGetDoublev(GL_MODELVIEW, m);
+        glScalef(0.2,0.2,0.2);
+        glRotated(S->rotation_x,0.0,1.0,0.0);
+        glRotated(S->rotation_y,1.0,0.0,0.0);
+        glTranslated(0.0, 6.0, 20.0);
 
-      GLdouble e[4];
+        set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
 
-      S->mv_location = e;
+        obj_render(S->Spot);
+
+        //get the current matrix, and use it
+        //to determine the eye coordinates of
+        //any point in the Spot object..
+        //printf("anchor coord %d is {%f,%f,%f,%f}\n", S->num_verts-1, S->obj_anchor[0], S->obj_anchor[1], S->obj_anchor[2], S->obj_anchor[3]);
+
+        double m[16];
+        glGetDoublev(GL_MODELVIEW, m);
+
+        //debug
+        int i=0;
+        for(i;i<16;i++)
+        {
+            //printf("value of m[%d]=%f\n", i, m[i]);
+        }
+
+        S->mv_location[0] = S->obj_anchor[0]*m[0] + S->obj_anchor[1]*m[4] + S->obj_anchor[2]* m[8]  + S->obj_anchor[3] *m[12];
+        S->mv_location[1] = S->obj_anchor[0]*m[1] + S->obj_anchor[1]*m[5] + S->obj_anchor[2]* m[9]  + S->obj_anchor[3] *m[13];
+        S->mv_location[2] = S->obj_anchor[0]*m[2] + S->obj_anchor[1]*m[6] + S->obj_anchor[2]* m[10] + S->obj_anchor[3] *m[14];
+        S->mv_location[3] = S->obj_anchor[0]*m[3] + S->obj_anchor[1]*m[7] + S->obj_anchor[2]* m[11] + S->obj_anchor[3] *m[15];
+        //printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}\n", S->mv_location[0], S->mv_location[1], S->mv_location[2], S->mv_location[3]);
+        //get_eye_coords(m,S->obj_anchor,e);
+
+        //S->mv_location = *e;
 
     }
     glPopMatrix();
 
+    GLuint theta = glGetUniformLocation(program,"theta");
+    GLuint rho   = glGetUniformLocation(program, "rho");
+    GLuint radius= glGetUniformLocation(program, "radius");
+
+    glUniform1f(theta,  S->rotation_x);
+    glUniform1f(rho,    S->rotation_y);
+    glUniform1f(radius, 20.0);
+
+    printf("passing uniforms: theta: %f rho: %f radius: %f\n",S->rotation_x, S->rotation_y, 20.0);
 
 }
 
@@ -302,6 +324,8 @@ static void display(void)
                        / glutGet(GLUT_WINDOW_HEIGHT);                          \
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
     glMatrixMode(GL_PROJECTION);                                               \
     glLoadIdentity();                                                          \
@@ -315,15 +339,15 @@ static void display(void)
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
 		
+    set_spot();
     init_shader_vars();
 	
-    set_spot();
 
 
         glPushMatrix();
         {
             //glDisable(GL_LIGHTING);
-            plane_render(P);
+            //plane_render(P);
             glTranslated(0.0, 1.0, 0.0);
             //obj_render(O13);
             obj_render(O);
@@ -337,6 +361,15 @@ static void display(void)
           //glEnable(GL_LIGHTING);
         }
         glPopMatrix();
+        double m[16];
+        glGetDoublev(GL_MODELVIEW, m);
+
+        //debug
+        int i=0;
+        for(i;i<16;i++)
+        {
+            //printf("value of final matrix m[%d]=%f\n", i, m[i]);
+        }
 
     glutSwapBuffers();
 }
@@ -456,9 +489,9 @@ int main(int argc, char** argv) {
 		
     S = malloc(sizeof(struct spotlight));
 
-    S->x = spot_pos_x;
-    S->y = spot_pos_y;
-    S->z = spot_pos_z;
+    S->mv_location[0] = spot_pos_x;
+    S->mv_location[1] = spot_pos_y;
+    S->mv_location[2] = spot_pos_z;
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(1024, 800);
