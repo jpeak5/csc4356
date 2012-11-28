@@ -5,7 +5,6 @@ uniform float radius;
 
 varying float D;
 varying vec3  S;
-varying vec2  TexCoord;
 
 void main()
 

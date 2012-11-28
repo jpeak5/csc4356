@@ -6,7 +6,7 @@ uniform float rho;
 uniform float radius;
 varying float LightIntensity;
 varying vec2 MCposition;
-
+varying vec3 lightPos;
 //attribute vec3 tangent;
 const float SpecularContribution = 0.3;
 const float DiffuseContribution = 1.0 - SpecularContribution;

@@ -6,6 +6,7 @@ uniform float radius;
 attribute vec3 tangent;
 
 
+varying vec3 Normal;
 varying vec3 LightDir;
 varying vec3 EyeDir;
 uniform vec3 LightPosition;
@@ -25,6 +26,7 @@ void main()
     LightPosition = vec3(lp * gl_ModelViewMatrixTranspose);
     EyeDir = vec3(gl_ModelViewMatrix * gl_Vertex);
 
+    Normal = gl_NormalMatrix * gl_Normal;
     gl_Position = ftransform();
     gl_TexCoord[0] = gl_MultiTexCoord0;
     

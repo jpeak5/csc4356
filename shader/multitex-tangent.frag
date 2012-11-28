@@ -5,26 +5,38 @@ uniform sampler2D specular;
 uniform sampler2D normal;
 
 
+varying vec3 Normal;
 varying vec3 LightDir;
 varying vec3 EyeDir;
-//uniform vec3 SurfaceColor; // = (0.7, 0.6, 0.18)
-//uniform float BumpDensity; // = 16.0
-//uniform float BumpSize; // = 0.15
-//uniform float SpecularFactor; // = 0.5
+
 void main()
 {
-    vec3 litColor;
-
+    vec3 V  = EyeDir;
+    vec3 L  = normalize(LightDir);
+    
+    vec3 N  = normalize(Normal);
     vec3 pN = (texture2D(normal, gl_TexCoord[0].xy).xyz); //perturbed normal
-    vec3 diffuse = (texture2D(diffSamp, gl_TexCoord[0].xy).rgb);
-    float f = 4.0; //arbitrary value
-    vec3 normDelta = pN;// * f;
-    litColor = diffuse * max(dot(normDelta, LightDir), 0.0);
-    vec3 reflectDir = reflect(LightDir, normDelta);
-    float spec = max(dot(EyeDir, reflectDir), 0.0);
-    spec = pow(spec, 6.0);
-    spec = 0.5*spec; //0.5 is arbitrary but could be set by a gloss map
-    litColor = min(litColor + spec, vec3(1.0));
-    gl_FragColor = vec4(litColor, 1.0);
+    vec3 pC = pN*2.0;
+    pC.r = pC.r -1.0;
+    pC.g = pC.g -1.0;
+    pC.b = pC.b -1.0;
+
+    vec3 D  = (texture2D(diffSamp, gl_TexCoord[0].xy).rgb);
+  //vec4 D  = gl_FrontMaterial.diffuse;
+    vec3 S  = (texture2D(specular, gl_TexCoord[0].xy).rgb); 
+
+    vec3 pNorm = normalize(pN);
+    vec3  reflectDir = reflect(LightDir, pNorm);
+    float n = gl_FrontMaterial.shininess;
+
+    float kd =     max(dot(pNorm, L), 0.0);
+    float ks = pow(max(dot(EyeDir, reflectDir), 0.0), n); 
+
+    vec3  rgb = D.rgb * kd + S.rgb * ks; // RGB channels
+    float a   = 1.0; 
+  //float a   = D.a; 
+
+    gl_FragColor = vec4(rgb, a); 
+
 }
 

@@ -7,12 +7,12 @@ uniform sampler2D normal;
 
 varying float D;
 varying vec3  S;
-varying vec2  TexCoord;
 
 void main()
 {
     vec3 diffuse = (texture2D(diffSamp, TexCoord).rgb * D);// + S * clouds.g) * (1.0 - clouds.r) +  clouds.r * D;
-    vec3 color = diffuse;
+    vec3 spotlight = (texture2DProj(spotSamp, gl_TexCoord[0].xy));
+    vec3 color = diffuse;// + spotlight;
     
 
     gl_FragColor = vec4(color, 1.0);
