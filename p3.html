@@ -1,0 +1,158 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+
+<h1>CSC4356::Project3</h1>
+
+<p><a href="https://github.com/jpeak5/csc4356/tarball/3.0">download</a>
+<a href="https://github.com/jpeak5/csc4356">browse</a></p>
+<h3>Menus</h3>
+<p>I did not use menus in project 2, but the in-class presentations convinced 
+me that I needed to start project 3 with menus. As with much of the documentation 
+I encountered in the course of this project, I found the documentation for <a href="http://www.opengl.org/documentation/specs/glut/spec3/node35.html#SECTION00070000000000000000">GLUT menus</a> 
+to be a little on the rustic side. Google led me to a decent, albeit Windows-centric,
+tutorial from <a href="http://www.lighthouse3d.com/tutorials/glut-tutorial/popup-menus/">Lighthouse 3D</a>.</p>
+<h3>Loading Multiple Textures</h3>
+<p>The <a href="http://csc.lsu.edu/~kooima/util3d/obj.html#property">obj</a> module made things very easy here. Using it, and code from 
+our lecture slides, creating sampler uniforms was a non-issue. In order to understand 
+better what the library was doing, I read a little about <code>.mtl</code> here: 
+<a href="http://people.sc.fsu.edu/~jburkardt/data/mtl/mtl.html"><strong>MTL Files Material Definitions for OBJ Files</strong></a>.</p>
+<h3>Down to Business</h3>
+<p>Immediately after working out the obj module, I had a nice <em>Thirteen Box</em> 
+dresed in its diffuse texture. Adding the specular sampler and some 
+lighting calculations borrowed from our first lectures on shader lighting
+gave me what looked like specular behavior, but without the specular
+texture mapping demonstrated in class...
+Early attempts to tweak those calculations resulted in static:
+<a href="https://github.com/jpeak5/csc4356/commit/dc9d31ca0e3be45191471f70fdfe91ace1ad379b">dc9d31ca0</a><br />
+<img alt="screenshot" src="images/specular-error.png" width="40%"/></p>
+<p>Believing I had gotten the shininess looking fairly good, I need to turn attention to the 
+lighting, then the normal map -notice that there's still a pretty serious problem 
+in that the shininess only works when we are looking straight at the box...thinking 
+that another light will help that.<br />
+<img alt="screenshot" src="images/shininess-sans-spot-sans-normal.png" width="40%"/></p>
+<h2>Getting Stuck</h2>
+<h3>...with not enough time left...</h3>
+<ul>
+<li>It appears that the material textures I'm loading through calls to the <a href="http://csc.lsu.edu/~kooima/util3d/obj.html#property">obj</a>
+module are working, but not as I expect.<ul>
+<li>commenting out all of my <code>glBindTexture</code> calls from the main application does not 
+stop them from appearing which led me to see that the <code>obj</code> module is doing this as 
+part of its <code>create</code> methods.</li>
+</ul>
+</li>
+</ul>
+<h4>Lighting</h4>
+<p>At this point in my progress, I became convinced that getting the light
+correct was the best way forward, and my dedication to this position consumed
+most of the 40 hours I spent in the last week...trying to figure it out...</p>
+<h4>Spotlight</h4>
+<p>To make a spotlight, it looks like there are a range of options, the
+most attractive of which is to enable the built-in lights as spotlights.
+However, while I have not found it explicitly stated anywhere, calls
+like the following seem to be fixed-function specific.
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+Shader based lighting computes light color and intensity on a per-vertex
+or per-fragment basis (or both), and does not require the previously
+mentioned function calls (commenting them out seems to have no effect).
+* Using user-defined light source coordinates:</p>
+<blockquote>
+<p>We could use the OpenGL lighting
+state and reference that state within our vertex shader, but to illustrate the use of uniform
+variables, we define the light source position as a uniform variable like this:
+-<em>Orange Book</em> 157
+<em> in search of a better understanding of non-fixed function lighting, I 
+have run the brick shader from the <em>Orange Book</em> (155-167) using my own mechanism for
+determining the location of the light (in main application). Setting the position
+according to mouse coordinates is working, but the coordinates are in the 
+wrong coordinate space...</em> Still looking...multiplying the mouse coordinates by <code>gl_ModelViewProjectionMatrixInverseTranspose</code> 
+is yielding weird results:<br />
+<img alt="screenshot" src="images/wierd-lighting-01.png" width="40%"/>
+<em> <em>The trick is to treat your light as any other object.</em> -[http://labs.pieterdedecker.be/blog/defining-a-fixed-light-source-in-opengl/][http://labs.pieterdedecker.be/blog/defining-a-fixed-light-source-in-opengl/]</em> ....<strong>many</strong> hours later, some careful review of transformation and of the glut motion 
+and mouse callback functions has led me to a functional spotlight object that can orbit
+in step with the mouse.<a href="221a466">221a466</a>
+<img alt="screenshot" src="images/spotlight-02.png" width="40%"/></p>
+</blockquote>
+<hr />
+<h4>Eye Coordinate Space</h4>
+<ul>
+<li>getting the eye coordinates for an arbitrary vector has been a very long search...<ul>
+<li>the answer is (perhaps) in paragraph 9.120 <a href="http://www.opengl.org/archives/resources/faq/technical/transformations.htm">http://www.opengl.org/archives/resources/faq/technical/transformations.htm</a></li>
+</ul>
+</li>
+<li>
+<p>several hours later, my modelview matrices are seeming incorrect.
+        double m[16];
+        glGetDoublev(GL_MODELVIEW, m);</p>
+<pre><code>printf("anchor coord %d is {%f,%f,%f,%f}\n", S-&gt;num_verts-1, S-&gt;obj_anchor[0], S-&gt;obj_anchor[1], S-&gt;obj_anchor[2], S-&gt;obj_anchor[3]);
+S-&gt;mv_location[0] = S-&gt;obj_anchor[0]*m[0] + S-&gt;obj_anchor[1]*m[4] + S-&gt;obj_anchor[2]* m[8]  + S-&gt;obj_anchor[3] *m[12];
+S-&gt;mv_location[1] = S-&gt;obj_anchor[0]*m[1] + S-&gt;obj_anchor[1]*m[5] + S-&gt;obj_anchor[2]* m[9]  + S-&gt;obj_anchor[3] *m[13];
+S-&gt;mv_location[2] = S-&gt;obj_anchor[0]*m[2] + S-&gt;obj_anchor[1]*m[6] + S-&gt;obj_anchor[2]* m[10] + S-&gt;obj_anchor[3] *m[14];
+S-&gt;mv_location[3] = S-&gt;obj_anchor[0]*m[3] + S-&gt;obj_anchor[1]*m[7] + S-&gt;obj_anchor[2]* m[11] + S-&gt;obj_anchor[3] *m[15];
+int i=0;
+for(i;i&lt;16;i++)
+{
+    printf("value of m[%d]=%f\n", i, m[i]);
+}
+printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}\n", S-&gt;mv_location[0], S-&gt;mv_location[1], S-&gt;mv_location[2], S-&gt;mv_location[3]);
+</code></pre>
+</li>
+</ul>
+<p>running this lets me see the values being multiplied, and to my disappointment, 
+<code>m[14]</code> and <code>m[15]</code> are <code>nan</code> while other values are astronomically high...</p>
+<pre><code>    passing uniform lightPos: x: 16009741167.406668 y: -0.001083 z: -nan
+    anchor coord 63 is {0.582255,0.241178,-0.637333,0.000000}
+    value of m[0]=-0.000000
+    value of m[1]=0.000000
+    value of m[2]=0.002734
+    value of m[3]=-0.000000
+    value of m[4]=66381455640.562408
+    value of m[5]=0.002734
+    value of m[6]=0.000000
+    value of m[7]=66379799483.187408
+    value of m[8]=0.000000
+    value of m[9]=0.002734
+    value of m[10]=0.000000
+    value of m[11]=-0.000000
+    value of m[12]=0.000000
+    value of m[13]=0.000000
+    value of m[14]=-nan
+    value of m[15]=-nan
+    the coordinate of vector TRANSFORMED is {16009741167.406668,-0.001083,-nan,-nan}
+</code></pre>
+<h4>Plan B</h4>
+<ul>
+<li>in a last ditch effort not to stay stuck, I am trying a method I came across 
+earlier on in this effort; a method using <code>gluUnProject</code> is given by the author 
+of a page at <a href="http://nehe.gamedev.net/article/using_gluunproject/16013/">Neon Helium</a>. <ul>
+<li>The idea is to use <a href="http://www.opengl.org/sdk/docs/man2/xhtml/gluUnProject.xml"><code>gluUnProject</code></a> 
+to derive coordinates from mouse (x,y) screen coordinates</li>
+<li>not having heard much in class about the <em>glu</em> lib, I suspect this is obsolete.</li>
+<li>while this works far better than my earlier approach, it doesn't work well 
+enough to break copyright...</li>
+</ul>
+</li>
+</ul>
+<h4>Plan C</h4>
+<ul>
+<li>Spherical Coordinates<ul>
+<li>I know that my spotlight orbits the object in the surface of a sphere.</li>
+<li>there should be a fairly simple workaround here</li>
+</ul>
+</li>
+<li>While this approach is sound, my implementation is severely flawed...<ul>
+<li>each mouse motion with the middle button depressed triggers a recalculation of 
+the angles representing the light source position. Since I forgot to store the 
+previous angle, the calculations are done based on the difference between the 
+current position and the precious, rather than being calculated in relation to 
+some constant (like the vector {1,1,1})</li>
+<li>on closer inspection, the <code>dx</code> and <code>dy</code> values are accumulating as they should, 
+however the source of the light is oscillating very quickly, evident on the shape 
+of the <em>spotlight</em> object itself.</li>
+<li><strong>TODO</strong> try transforming the <code>dx</code>/<code>dy</code> based vector by the GL_MODELVIEW_MATRIX 
+<em>before</em> sending it to the shaders.</li>
+</ul>
+</li>
+</ul>
+<hr />
