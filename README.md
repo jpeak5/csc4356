@@ -1,2 +1,2 @@
 `make`  
-`./p2 obj/trivial.obj shader/simple_shdr.vert shader/simple_shdr.frag`
+`./p2 obj/thirteen-box.obj shader/multitex-tangent.vert shader/multitext-tangent.frag`
