@@ -136,7 +136,7 @@ void init_textures()
     
     glActiveTexture(GL_TEXTURE0);
     
-    GLint spotlight = glGetUniformLocation(program, "spotlight");
+    GLint spotlight = glGetUniformLocation(program, "spotSamp");
     glUniform1i(spotlight, 4);
 
     GLint shine = glGetUniformLocation(program, "shiny");
@@ -177,7 +177,7 @@ void startup(char *filename)
     //create our spotlight
     S->Spot = obj_create("obj/spotlight.obj");
 
-    S->radius = 30.0;
+    S->radius = 90.0;
 
     //knowing this will help us grab a reference vert
     S->num_verts = obj_num_vert(S->Spot);
