@@ -7,6 +7,7 @@
 <p><a href="https://github.com/jpeak5/csc4356/tarball/3.0">download</a>
 <a href="https://github.com/jpeak5/csc4356/tree/P3">browse</a></p>
 <p>Files of interest are <code>main.c</code> and the <code>mutltitex*</code> shaders under <code>shader/</code>.</p>
+<p>In general, this document is chronologic. </p>
 <h3>Menus</h3>
 <p>I did not use menus in project 2, but the in-class presentations convinced 
 me that I needed to start project 3 with menus. As with much of the documentation 
@@ -152,8 +153,20 @@ some constant (like the vector {1,1,1})</li>
 however the source of the light is oscillating very quickly, evident on the shape 
 of the <em>spotlight</em> object itself.</li>
 <li><strong>TODO</strong> try transforming the <code>dx</code>/<code>dy</code> based vector by the GL_MODELVIEW_MATRIX 
-<em>before</em> sending it to the shaders.</li>
+<em>before</em> sending it to the shaders.
+<img alt="screenshot" src="images/sphere-01.png" width="40%"/>
+This image illustrates the error: while the spotlight is positioned basically in the <em>y</em> axis, the light is directed down the <em>-z</em> axis...</li>
 </ul>
 </li>
 </ul>
 <hr />
+<h3>Spotlight Fail</h3>
+<p><img alt="screenshot" src="images/spotlight.png" width="40%"/>
+Using the image above as a spotlight, I failed to get things rolling in the right direction.
+<img alt="screenshot" src="images/spotlight-03.png" width="40%"/>
+<a href="https://github.com/jpeak5/csc4356/blob/P3/shader/multitex-spotlight-fail.vert">vert shader</a><br />
+<a href="https://github.com/jpeak5/csc4356/blob/P3/shader/multitex-spotlight-fail.frag">frag shader</a></p>
+<h3>Tangent space</h3>
+<p><img alt="screenshot" src="images/tangent-01.png" width="40%"/>
+Using the example presented in the <em>Orange Book</em>, I have loaded the tangent attribute
+per-vertex provided by the obj module. <a href="https://github.com/jpeak5/csc4356/commit/3e17505995c286da83fa4287e2d9655ff47e98f1">commit snapshot</a> </p>
