@@ -332,7 +332,7 @@ void set_spot()
     glUniform1f(rho,    S->rotation_y);
     glUniform1f(radius, S->radius);
 
-    printf("passing uniforms: theta: %f rho: %f radius: %f\n",S->rotation_x, S->rotation_y, S->radius);
+    //printf("passing uniforms: theta: %f rho: %f radius: %f\n",S->rotation_x, S->rotation_y, S->radius);
 
 }
 
@@ -358,7 +358,7 @@ static void display(void)
     glRotated(rotation_y, 0.0, 1.0, 0.0);
     glTranslated(-position_x, -position_y+1.0, -position_z);
 		
-    set_spot();
+    
     init_shader_vars();
 	
 
@@ -370,7 +370,7 @@ static void display(void)
             glTranslated(0.0, 1.0, 0.0);
             //obj_render(O13);
             obj_render(O);
-
+            set_spot();
           GLdouble m[16];
           glGetDoublev(GL_MODELVIEW, m);
           GLdouble e[4];
