@@ -43,8 +43,7 @@ GLdouble click_ny;
 
 struct spotlight 
 {
-    GLdouble mv_location[4];
-    GLdouble obj_anchor[4];
+
     float x;
     float y;
     float z;
@@ -62,30 +61,14 @@ int menu;
 
 plane *P;
 obj *O;
-obj *O13;
-
-
-float spot_pos_x;
-float spot_pos_y;
-float spot_pos_z;
 
 
 void init_textures()
 {
 
     /*
-    unsigned int mtl_spec = obj_get_mtrl_map(O, 0, OBJ_KS); 
-    unsigned int mtl_diff = obj_get_mtrl_map(O, 0, OBJ_KD); 
-    unsigned int mtl_norm = obj_get_mtrl_map(O, 0, OBJ_KA);
+    * get an image texture for the spotlight
     */
-    /*
-    GLuint diff_tex = mtl_diff;
-    GLuint spec_tex = mtl_spec;
-    GLuint norm_tex = mtl_norm;
-	*/
-    /*
-		 * get an image texture for the spotlight
-		 */
     int w, h, c, b;
     void *p = image_read("spotlight.png", &w, &h, &c, &b);
     int i = image_internal_form(c, b);
@@ -109,30 +92,6 @@ void init_textures()
 
 
     free(p);
-
-    /*
-    GLuint texture = diff_tex;
-    GLboolean in_use = glIsTexture(texture);
-
-    if(in_use){
-        printf("texture %u is in use\n", texture);
-    }
-    else
-    {
-        printf("texture %u is NOT in use\n", texture);
-    }
-    */
-    
-    /*
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, diff_tex);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, spec_tex);
-    
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, norm_tex);
-    */
     
     glActiveTexture(GL_TEXTURE0);
     
@@ -171,7 +130,7 @@ void startup(char *filename)
     
 
     O = obj_create(filename);
-    //O13 = obj_create("obj/swept.obj");
+
     P = plane_create(20);
 
     //create our spotlight
@@ -188,12 +147,6 @@ void startup(char *filename)
     float *a;
     obj_get_vert_v(S->Spot, S->num_verts-1, a);
     a[3] = 0.0;
-    S->obj_anchor[0] = (GLdouble)a[0];
-    S->obj_anchor[1] = (GLdouble)a[1];
-    S->obj_anchor[2] = (GLdouble)a[2];
-    S->obj_anchor[3] = (GLdouble)a[3];
-    printf("the coordinate of vert %d is {%f,%f,%f, %f}", S->num_verts-1,S->obj_anchor[0], S->obj_anchor[1], S->obj_anchor[2], S->obj_anchor[3]);
-
 
     init_textures();
     glBindAttribLocationARB(program, 6, "tangent");
@@ -207,9 +160,8 @@ void startup(char *filename)
     glLoadIdentity();
     glPushMatrix();
     {
-      glRotated(S->mv_location[0],S->mv_location[1], S->mv_location[2], 1.0);
-        //glRotated(S->mv_location[0], S->mv_location[1], S->mv_location[2], 0.0);
-      obj_render(S->Spot);
+        glTranslated(0.0,5.0,0.0);
+        obj_render(S->Spot);
     }
 
     
@@ -255,29 +207,8 @@ static void reshape(int w, int h)
     glViewport(0, 0, w, h);
 }
 
-/**
- * m - a gl matrix
- * o - the vector you'd like to transfor
- * t - the transformed vector
- */
-void get_eye_coords(GLdouble m[16], GLdouble *v, GLdouble *w)
-{
-    w[0] = v[0]*m[0] + v[1]*m[4] + v[2]* m[8]  + v[3] *m[12];
-    w[0] = v[0]*m[1] + v[1]*m[5] + v[2]* m[9]  + v[3] *m[13];
-    w[0] = v[0]*m[2] + v[1]*m[6] + v[2]* m[10] + v[3] *m[14];
-    w[0] = v[0]*m[3] + v[1]*m[7] + v[2]* m[11] + v[3] *m[15];
-    //printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}", w[0], w[1], w[2], w[3]);
-}
-
-void set_spot_pos(float x, float y, float z)
-{
 
 
-    S->mv_location[0] = x;
-    S->mv_location[1] = y;
-    S->mv_location[2] = z;
-    
-}
 
 void set_spot()
 {
@@ -292,7 +223,7 @@ void set_spot()
         glRotated(S->rotation_y,1.0,0.0,0.0);
         glTranslated(0.0, 6.0, S->radius);
 
-        set_spot_pos(S->rotation_x, -S->rotation_y, 1.0);
+
 
         obj_render(S->Spot);
 
@@ -304,21 +235,8 @@ void set_spot()
         double m[16];
         glGetDoublev(GL_MODELVIEW, m);
 
-        //debug
-        int i=0;
-        for(i;i<16;i++)
-        {
-            //printf("value of m[%d]=%f\n", i, m[i]);
-        }
 
-        S->mv_location[0] = S->obj_anchor[0]*m[0] + S->obj_anchor[1]*m[4] + S->obj_anchor[2]* m[8]  + S->obj_anchor[3] *m[12];
-        S->mv_location[1] = S->obj_anchor[0]*m[1] + S->obj_anchor[1]*m[5] + S->obj_anchor[2]* m[9]  + S->obj_anchor[3] *m[13];
-        S->mv_location[2] = S->obj_anchor[0]*m[2] + S->obj_anchor[1]*m[6] + S->obj_anchor[2]* m[10] + S->obj_anchor[3] *m[14];
-        S->mv_location[3] = S->obj_anchor[0]*m[3] + S->obj_anchor[1]*m[7] + S->obj_anchor[2]* m[11] + S->obj_anchor[3] *m[15];
-        //printf("the coordinate of vector TRANSFORMED is {%f,%f,%f,%f}\n", S->mv_location[0], S->mv_location[1], S->mv_location[2], S->mv_location[3]);
-        //get_eye_coords(m,S->obj_anchor,e);
 
-        //S->mv_location = *e;
 
     }
     glPopMatrix();
@@ -368,14 +286,13 @@ static void display(void)
             //glDisable(GL_LIGHTING);
             plane_render(P);
             glTranslated(0.0, 1.0, 0.0);
-            //obj_render(O13);
+
             obj_render(O);
             set_spot();
           GLdouble m[16];
           glGetDoublev(GL_MODELVIEW, m);
           GLdouble e[4];
 
-          //get_eye_coords(m, S->mv_location, e);
 
           //glEnable(GL_LIGHTING);
         }
@@ -459,18 +376,10 @@ void mouse(int button, int state, int x, int y)
     click_rotation_x = rotation_x;
     click_rotation_y = rotation_y;
 
-//Wheel reports as button 3(scroll up) and button 4(scroll down)
-if ((button == 3) || (button == 4)) // It's a wheel event
-{
-    //http://stackoverflow.com/questions/14378/using-the-mouse-scrollwheel-in-glut
-    // Each wheel event reports like a button click, GLUT_DOWN then GLUT_UP
-    if (state == GLUT_UP) return; // Disregard redundant GLUT_UP events
-    //printf("Scroll %s At %d %d\n", (button == 3) ? "Up" : "Down", x, y);
+    //Wheel reports as button 3(scroll up) and button 4(scroll down)
+    if ((button == 3) || (button == 4)) // It's a wheel event
+    {
 
-    //keyboard_dz -= 1.0;
-    }else{  // normal button event
-    //printf("Button %s At %d %d\n", (state == GLUT_DOWN) ? "Down" : "Up", x, y);
-    //keyboard_dz += 1.0;
     }
 }
     
@@ -507,10 +416,6 @@ void idle(void)
 int main(int argc, char** argv) {
 		
     S = malloc(sizeof(struct spotlight));
-
-    S->mv_location[0] = spot_pos_x;
-    S->mv_location[1] = spot_pos_y;
-    S->mv_location[2] = spot_pos_z;
 
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowSize(1024, 800);
