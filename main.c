@@ -248,8 +248,8 @@ void set_spot()
         glTranslated(0.0, 6.0, S->radius);
         GLfloat light_position[] = { 0.0, 1.0, 0.0, 1.0 };
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-        GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
-        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
+//        GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
+//        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
 
         
 
