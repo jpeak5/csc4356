@@ -152,16 +152,39 @@ void startup(char *filename)
     glBindAttribLocationARB(program, 6, "tangent");
 
 
-    glEnable(GL_DEPTH_TEST);
+//    glEnable(GL_DEPTH_TEST);
     //glEnable(GL_LIGHTING);
     //glEnable(GL_LIGHT0);
 
+    
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = { 50.0 };
+    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+    GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glShadeModel(GL_SMOOTH) ;
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glEnable(GL_LIGHTING) ;
+    glEnable(GL_LIGHT0) ;
+    glEnable(GL_DEPTH_TEST) ;
+
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glPushMatrix();
     {
         glTranslated(0.0,5.0,0.0);
         obj_render(S->Spot);
+        GLfloat light_position[] = { 0.0, 1.0, 0.0, 1.0 };
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
     }
 
     
@@ -222,10 +245,17 @@ void set_spot()
         glRotated(S->rotation_x,0.0,1.0,0.0);
         glRotated(S->rotation_y,1.0,0.0,0.0);
         glTranslated(0.0, 6.0, S->radius);
-
-
-
         obj_render(S->Spot);
+        /**
+         * clues from the Red Book, 6ed.
+         */
+        glRotated(S->rotation_x,0.0,1.0,0.0);
+        glRotated(S->rotation_y,1.0,0.0,0.0);
+        glTranslated(0.0, 6.0, S->radius);
+        GLfloat light_position[] = { 0.0, 1.0, 0.0, 1.0 };
+        glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+        
 
         //get the current matrix, and use it
         //to determine the eye coordinates of
@@ -286,10 +316,13 @@ static void display(void)
             //glDisable(GL_LIGHTING);
             plane_render(P);
             glTranslated(0.0, 1.0, 0.0);
-
             obj_render(O);
             set_spot();
-          GLdouble m[16];
+            glScalef(0.2,0.2,0.2);
+            
+            
+          
+            GLdouble m[16];
           glGetDoublev(GL_MODELVIEW, m);
           GLdouble e[4];
 
