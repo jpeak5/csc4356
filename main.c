@@ -373,7 +373,7 @@ void motion(int x, int y)
     if (click_button == GLUT_MIDDLE_BUTTON)
     {
         float xa = 2.0; // x acceleration 
-        float ya = 0.5; // y acceleration 
+        float ya = 0.9; // y acceleration 
         S->rotation_x = click_rotation_x + 360.0 * dx * zoom * xa;
         S->rotation_y = click_rotation_y + 360.0 * dy * zoom * ya;
                                                             
