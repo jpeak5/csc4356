@@ -136,7 +136,7 @@ void startup(char *filename)
     //create our spotlight
     S->Spot = obj_create("obj/spotlight.obj");
 
-    S->radius = 90.0;
+    S->radius = 40.0;
 
     //knowing this will help us grab a reference vert
     S->num_verts = obj_num_vert(S->Spot);
@@ -153,12 +153,16 @@ void startup(char *filename)
 
     GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+    GLfloat lmodel_ambient[] = { 0.01, 0.01, 0.01, 1.0 };
 
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 2.0);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 1.0);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);
+
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
     glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0);
     GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
