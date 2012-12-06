@@ -151,26 +151,20 @@ void startup(char *filename)
     init_textures();
     glBindAttribLocationARB(program, 6, "tangent");
 
-
-//    glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
-
-    
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
     GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat lmodel_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glShadeModel(GL_SMOOTH) ;
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, white_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, white_light);
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 45.0);
+    GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
+
+
     glEnable(GL_LIGHTING) ;
     glEnable(GL_LIGHT0) ;
     glEnable(GL_DEPTH_TEST) ;
@@ -188,7 +182,7 @@ void startup(char *filename)
     }
 
     
-    glClearColor(0.19f, 0.17f, 0.16f, 0.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
 
 }
 
@@ -254,6 +248,8 @@ void set_spot()
         glTranslated(0.0, 6.0, S->radius);
         GLfloat light_position[] = { 0.0, 1.0, 0.0, 1.0 };
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+        GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
+        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
 
         
 
