@@ -22,7 +22,7 @@ void main()
     y = radius * sin(theta) * sin(rho);
     z = radius * cos(theta);
 
-    var_L = vec3(x,y,z);
+    var_L = normalize(gl_LightSource[0].position.xyz);
     var_N = normalize(gl_NormalMatrix * gl_Normal);
     vec3 lightVec = normalize(var_L - ecPosition);
 

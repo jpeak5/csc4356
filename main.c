@@ -248,10 +248,7 @@ void set_spot()
         glTranslated(0.0, 6.0, S->radius);
         GLfloat light_position[] = { 0.0, 1.0, 0.0, 1.0 };
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-//        GLfloat spot_direction[] = { 0.0, -1.0, 0.0 };
-//        glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, spot_direction);
 
-        
 
         //get the current matrix, and use it
         //to determine the eye coordinates of
@@ -381,11 +378,11 @@ void motion(int x, int y)
         if (S->rotation_y >  360.0) S->rotation_y -=  360.0;
         if (S->rotation_y < -360.0) S->rotation_y +=  360.0;
 
-        printf("function inputs are x: %d, y: %d\n",x,y);
-        printf("intermediate vars are cl_rot_x: %f cl_rot_y: %f\n", click_rotation_x, click_rotation_y);
-        printf("more intermediate vars are rot_x: %f rot_y: %f\n", rotation_x, rotation_y);
-        printf("even more intermediate vars are dx: %f dy: %f zoom: %f\n", dx, dy, zoom);
-        printf("function outputs are S->rotation_x: %f, S->rotation_y: %f\n",S->rotation_x,S->rotation_y);
+//        printf("function inputs are x: %d, y: %d\n",x,y);
+//        printf("intermediate vars are cl_rot_x: %f cl_rot_y: %f\n", click_rotation_x, click_rotation_y);
+//        printf("more intermediate vars are rot_x: %f rot_y: %f\n", rotation_x, rotation_y);
+//        printf("even more intermediate vars are dx: %f dy: %f zoom: %f\n", dx, dy, zoom);
+//        printf("function outputs are S->rotation_x: %f, S->rotation_y: %f\n",S->rotation_x,S->rotation_y);
 
 
     }
