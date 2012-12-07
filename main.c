@@ -93,8 +93,11 @@ void init_textures()
 
     free(p);
     
-    glActiveTexture(GL_TEXTURE0);
-    
+//    glActiveTexture(GL_TEXTURE0);
+    //this must come after gl_use_prog
+    //check for return value !=-1
+    //this must run on each reload
+    //true for all uniforms
     GLint spotlight = glGetUniformLocation(program, "spotSamp");
     glUniform1i(spotlight, 4);
 
@@ -149,7 +152,7 @@ void startup(char *filename)
     a[3] = 0.0;
 
     init_textures();
-    glBindAttribLocationARB(program, 6, "tangent");
+    
 
     GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
     GLfloat white_light[] = { 1.0, 1.0, 1.0, 1.0 };

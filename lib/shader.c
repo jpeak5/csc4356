@@ -88,7 +88,7 @@ void reload_shaders(char **shaders, int count)
 void link_shaders()
 {
     program = glCreateProgram();
-
+glBindAttribLocationARB(program, 6, "tangent");//after prog is created
     if(vert_shader > 0)
     {
         assert(vert_shader > 0);
