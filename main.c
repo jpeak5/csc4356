@@ -271,17 +271,6 @@ void set_spot()
     }
     glPopMatrix();
 
-    //use spherical geometry to approximate the light source position
-    GLuint theta = glGetUniformLocation(program,"theta");
-    GLuint rho   = glGetUniformLocation(program,"rho");
-    GLuint radius= glGetUniformLocation(program,"radius");
-
-    glUniform1f(theta,  S->rotation_x);
-    glUniform1f(rho,    S->rotation_y);
-    glUniform1f(radius, S->radius);
-
-    //printf("passing uniforms: theta: %f rho: %f radius: %f\n",S->rotation_x, S->rotation_y, S->radius);
-
 }
 
 static void display(void)
