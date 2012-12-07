@@ -51,11 +51,6 @@ void main()
     //vec4 spotColor = texture2D(spotlight, gl_TexCoord[0].xy);
     //vec3 final_color = rgb * spotColor.rgb + color.rgb;
     
-    /**
-     * this gives some weirdness, 
-     * static, but otherwise close
-     */
-    gl_FragColor = vec4(rgb,0.5); 
-    //gl_FragColor = vec4(rgb,a);
+    gl_FragColor = vec4(rgb,a);
 
 }
