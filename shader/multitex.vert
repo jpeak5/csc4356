@@ -1,15 +1,16 @@
 varying vec3 var_L;
 varying vec3 var_N;
 varying vec3 lightPos;
-attribute vec3 tangent;
 varying vec3 eyeVec;
+
+attribute vec3 tangent;
 
 
 
 void main()
 {
     vec3 vert = vec3(gl_ModelViewMatrix * gl_Vertex);
-    var_L = normalize(gl_LightSource[0].position.xyz);
+    var_L     = normalize(gl_LightSource[0].position.xyz);
     
     /**
      * build the components of a transformation matrix
@@ -31,5 +32,5 @@ void main()
     eyeVec = normalize(-vert * tbn);
 
     gl_TexCoord[0] = gl_MultiTexCoord0;
-    gl_Position = ftransform();
+    gl_Position    = ftransform();
 }

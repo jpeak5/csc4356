@@ -1,4 +1,4 @@
-uniform sampler2D diffuse;
+uniform sampler2D diffSamp;
 uniform sampler2D specular;
 uniform sampler2D normal;
 uniform sampler2D shiny;
@@ -12,19 +12,17 @@ varying vec3 eyeVec;
 
 void main()
 {
-    vec3 V   = normalize(eyeVec);                       //view vector (always in the pos Z)
-    //vec3 V   = vec3(0.0,0.0,1.0);                       //view vector (always in the pos Z)
-    vec3 L   = normalize(var_L);                                   //incoming light vector
+    vec3 V   = normalize(eyeVec);                       //view vector 
+    vec3 L   = normalize(var_L);                        //incoming light vector
     
-    //vec3 N   = var_N;                                   //surface normal
     vec3 H   = normalize(L + V);                        //half-angle
 
-    vec4 D   = texture2D(diffuse,  gl_TexCoord[0].xy);  //diffuse color
+    vec4 D   = texture2D(diffSamp,  gl_TexCoord[0].xy);  //diffuse color
     vec4 S   = texture2D(specular, gl_TexCoord[0].xy);  //specular light color
-    vec4 Z   = texture2D(shiny,    gl_TexCoord[0].xy);  //gloss map color?
+//    vec4 Z   = texture2D(shiny,    gl_TexCoord[0].xy);  //gloss map color?
     vec3 N   = texture2D(normal,   gl_TexCoord[0].xy).rgb;  //normal map
     
-    N = N*2.0 - 1.0;    
+    N = N*2.0 - 1.0;   //maps the range [0.0 - 1.0] => [-1.0, 1.0] 
 
     //vec4 S   = gl_FrontMaterial.specular;
     //float n  = gl_FrontMaterial.shininess;
@@ -40,15 +38,12 @@ void main()
      * share the same position; in this case, the viewer experiences the full
      * intensity of the diffuse reflected color
      */
-    float kd =     max(dot(N, L), 0.0);                 //lambert
-
-
    
-    vec3 R = reflect(-L, N);
+    vec3  R  = reflect(-L, N);
 
-    //float ks = pow(max(dot(N, H), 0.0), n);//blinn
-    
+    float kd =     max(dot(N, L), 0.0);                 //lambert
     float ks = pow(max(dot(R, V), 0.0), n);//phong
+    //float ks = pow(max(dot(N, H), 0.0), n);//blinn
 
     //D = vec4(0.0,1.0,0.0, 1.0);
     vec3  rgb = D.rgb * kd + S.rgb * ks;
@@ -60,7 +55,6 @@ void main()
     //vec4 spotColor = texture2D(spotlight, gl_TexCoord[0].xy);
     //vec3 final_color = rgb * spotColor.rgb + color.rgb;
     
-    //gl_FragColor =  vec4(var_L, 1.0);
-    gl_FragColor = vec4(vec3(kd), 1.0);
+    gl_FragColor = vec4(rgb,a);
 
 }
