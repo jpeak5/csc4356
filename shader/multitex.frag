@@ -22,7 +22,7 @@ void main()
 
     //vec4 S   = gl_FrontMaterial.specular;
     //float n  = gl_FrontMaterial.shininess;
-    float n    = 8.0;
+    float n    = 16.0;
 
     /*
      * kd will be used to calculate the intensity of the diffuse light
@@ -35,7 +35,7 @@ void main()
      * intensity of the diffuse reflected color
      */
    
-    vec3  R  = reflect(-L, N);
+    vec3  R  = reflect(L, N);
 
     float kd =     max(dot(N, L), 0.0);                 //lambert
     float ks = pow(max(dot(R, V), 0.0), n);//phong
