@@ -93,25 +93,8 @@ void init_textures()
 
     free(p);
     
-//    glActiveTexture(GL_TEXTURE0);
-    //this must come after gl_use_prog
-    //check for return value !=-1
-    //this must run on each reload
-    //true for all uniforms
-    GLint spotlight = glGetUniformLocation(program, "spotSamp");
-    glUniform1i(spotlight, 4);
-
-    GLint shine = glGetUniformLocation(program, "shiny");
-    glUniform1i(shine, 3);
-
-    GLint spec = glGetUniformLocation(program, "specular");
-    glUniform1i(spec, 2);
-
-    GLint norm = glGetUniformLocation(program, "normal");
-    glUniform1i(norm, 1);
-
-    GLint diff = glGetUniformLocation(program, "diffSamp");
-    glUniform1i(diff, 0);
+    glActiveTexture(GL_TEXTURE0);
+   
     
 }
 
