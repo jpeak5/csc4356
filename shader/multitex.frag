@@ -55,7 +55,7 @@ void main()
      * this gives some weirdness, 
      * static, but otherwise close
      */
-    //gl_FragColor = vec4(rgb,0.5); 
-    gl_FragColor = vec4(rgb,a);
+    gl_FragColor = vec4(rgb,0.5); 
+    //gl_FragColor = vec4(rgb,a);
 
 }
