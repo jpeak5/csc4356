@@ -35,7 +35,7 @@ void main()
      * intensity of the diffuse reflected color
      */
    
-    vec3  R  = reflect(L, N);
+    vec3  R  = reflect(-L, N);
 
     float kd =     max(dot(N, L), 0.0);                 //lambert
     float ks = pow(max(dot(R, V), 0.0), n);//phong
